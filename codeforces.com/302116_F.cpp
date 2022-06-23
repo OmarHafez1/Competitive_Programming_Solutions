@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 26 March 2022 (Saturday)  2:34:03 AM
 **
 */
  
@@ -188,21 +188,6 @@ int main() {
 void calculate() {
   int n;
   cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
+  n %= 3;
+  cout << (n == 1? "Khaled" : n == 2? "Omar" : "Yousef");
 }

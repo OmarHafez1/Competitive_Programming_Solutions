@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 10 March 2022 (Thursday)  8:49:34 AM
 **
 */
  
@@ -186,23 +186,24 @@ int main() {
 
 
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  int n, k;
+  string s;
+  cin >> n >> k >> s;
+  vi chs(26);
+  fe(ch, s) {
+    chs[ch-'a']++;
   }
+  int tmp = 0;
   int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  for(int i = 0; i < 26; i++) {
+    ans += chs[i];
+    if(chs[i]&1) {
+      ans--;
+      tmp++;
+    }
   }
+  tmp += ans%k;
+  ans /= k;
+  ans += tmp >= k && ans%2 == 0;
   cout << ans;
 }

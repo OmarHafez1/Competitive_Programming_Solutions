@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 01 March 2022 (Tuesday)  8:28:01 AM
 **
 */
  
@@ -20,7 +20,7 @@ typedef tree<long double,null_type,less<long double>,rb_tree_tag,tree_order_stat
 typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_string;
 
 const double PI = 3.141592653589793;
-const int MOD = 1e9+7; 
+int MOD = 1e9+7; 
 
 //
 using ui = unsigned int;
@@ -56,8 +56,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +89,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -121,44 +117,21 @@ using vpdp = vector<pdb>;
 #pragma GCC optimize("-ffast-math")
 #pragma GCC optimize("-funroll-loops")
 #pragma GCC optimize("-funroll-all-loops,-fpeel-loops,-funswitch-loops")
-#define y0 this_fix_bug_with_y0_2022
-#define y1 this_fix_bug_with_y1_2022
-#define y2 this_fix_bug_with_y2_2022
-#define y3 this_fix_bug_with_y3_2022
-#define y4 this_fix_bug_with_y4_2022
+#define y1 this_fix_bug_with_this_name_2022
 
 // some math
-#define point complex<ld>
-#define degree(x) (x) * 180.0 / PI
-#define radian(x) (x) * PI / 180.0
-#define sinDegrees(x) sin(radian(x))
-#define cosDegrees(x) cos(radian(x))
-#define tanDegrees(x) tan(radian(x))
-#define asinDegrees(x) dgeree(asin(x))
-#define acosDegrees(x) degree(acos(x))
-#define atanDegrees(x) degree(atan(x))
-#define EPS 1e-8
-#define is_same(a, b) (fabs(a-b) <= EPS)
-
-// some complex
-#define point complex<ld>
-#define c_angle(a) (atan2((a).imag(), (a).real()))
-#define c_vec(a,b) (b)-(a)
-#define c_dp(a,b) (conj(a)*(b)).real() // a*b cos(T), if zero -> prep
-#define c_cp(a,b) (conj(a)*(b)).imag()  // a*b sin(T), if zero -> parllel
-#define c_same(p1,p2) (c_dp(vec(p1,p2),vec(p1,p2)) < EPS)
-#define c_length(a) (hypot((a).imag(), (a).real()))
-#define c_distance(a, b, c) fabs(c_cp(a-b, a-c)/c_length(a-b))
-#define c_normalize(a) (a)/c_length(a)
-#define c_rotateO(p,ang) ((p)*exp(point(0,ang)))
-#define c_rotateA(p,ang,about) (c_rotateO(vec(about,p),ang)+about)
-#define c_reflectO(v,m) (conj((v)/(m))*(m))
+#define sinDegrees(x) sin((x) * PI / 180.0)
+#define cosDegrees(x) cos((x) * PI / 180.0)
+#define tanDegrees(x) tan((x) * PI / 180.0)
+#define asinDegrees(x) asin(x)* 180.0 / PI
+#define acosDegrees(x) acos(x)* 180.0 / PI
+#define atanDegrees(x) atan(x)* 180.0 / PI
 
 // bits
-#define cnt_1s(b) __builtin_popcountll(b)
-#define begin_0s(b) __builtin_clzll(b) 
-#define end_0s(b) __builtin_ctzll(b) 
-#define ffno(b) find_first_not_ofll(b) 
+#define cnt_1s(b) __builtin_popcount(b)
+#define begin_0s(b) __builtin_clz(b) 
+#define end_0s(b) __builtin_ctz(b) 
+#define ffno(b) find_first_not_of(b) 
 
 // permutation 
 #define n_perm next_permutation
@@ -166,43 +139,42 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+ll m = 1073741824ll;
 
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
+  
+  vi store(1000001, -1);
 
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
-}
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  int a, b, c;
+  cin >> a >> b >> c; 
+  ull ans = 0;
+  for(int i = 1; i <= a; i++) {
+    for(int j = 1; j <= b; j++) {
+      for(int k = 1; k <= c; k++) {
+        int tmp = i*j*k;
+        if(store[tmp] != -1) {
+          ans += store[tmp];
+          ans %= m;
+        } else {
+          int cnt = 0;
+          for(int i = 1; i*i < tmp; i++) {
+            if(tmp%i == 0) cnt+=2;
+          }
+          if(floor(sqrt(tmp)) == ceil(sqrt(tmp))) cnt++;
+          store[tmp] = cnt;
+          ans += cnt;
+          ans %= m;
+        }
+      }
+    }
   }
   cout << ans;
 }
+   
+   

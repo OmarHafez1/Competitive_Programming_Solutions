@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 12 March 2022 (Saturday)  7:28:49 PM
 **
 */
  
@@ -173,7 +173,7 @@ void calculate();
 
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
+  freopen("nearest.in", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
 
   int t;
@@ -188,21 +188,27 @@ int main() {
 void calculate() {
   int n;
   cin >> n;
-  int a[n];
   map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  set<int> st;
+  int tmp;
+  cin >> tmp;
+  mp[tmp] = 1;
+  st.insert(tmp);
+  for(int i = 2; i <= n; i++) {
+    cin >> tmp;
+    auto it = st.lower_bound(tmp);
+    if(it == st.end()) {
+      it = prev(it);
+    } if(*it == tmp) {
+      cout << mp[tmp] << " ";      
+    } else if(it == st.begin()) {
+      cout << mp[*it] << " ";
+    } else if(abs(tmp-*(prev(it))) < abs((*it)-tmp)) {
+      cout << mp[*(prev(it))] << " ";
+    } else {
+      cout << mp[*it] << " ";
+    }
+    st.insert(tmp);
+    mp[tmp] = i;
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
 }

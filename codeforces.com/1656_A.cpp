@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 27 March 2022 (Sunday)  3:35:34 PM
 **
 */
  
@@ -188,21 +188,16 @@ int main() {
 void calculate() {
   int n;
   cin >> n;
-  int a[n];
-  map<int, int> mp;
+  int mn = INT_MAX;
+  int mx = 0;
+  int tmp;
+  int ai, aj;
   for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+    cin >> tmp;
+    if(tmp < mn) ai = i+1;
+    if(tmp > mx) aj = i+1;
+    mn = min(mn, tmp);
+    mx = max(mx, tmp);
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
+  cout << ai << " " << aj;
 }

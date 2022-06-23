@@ -1,10 +1,10 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 09 June 2022 (Thursday)  12:22:03 AM
 **
 */
- 
+
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
@@ -21,6 +21,7 @@ typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_nod
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -166,43 +167,55 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
 int main() { 
-  ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
-  //freopen("output.txt", "w", stdout); 
+    ios_base::sync_with_stdio(false); cin.tie(NULL); 
+    //freopen("input.txt", "r", stdin); 
+    //freopen("output.txt", "w", stdout); 
 
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
+    int n;
+    cin >> n;
+    deque<int> q1, q2;
+    int k;
+    cin >> k;
+    int a, b;
+    for(int i = 0; i < k; i++) {
+    	cin >> a;
+    	q1.push_back(a);
+    }
+    cin >> k;
+    for(int i = 0; i < k; i++) {
+    	cin >> a;
+    	q2.push_back(a);
+    }
+    int cnt = 0;
+    while(1) {
+    	if(cnt >= 107) {
+    		cout << -1;
+    		return 0;
+    	}
+    	if(q1.empty()) {
+    		cout << cnt << " " << 2;
+    		return 0;
+    	}
+    	if(q2.empty()) {
+    		cout << cnt << " " << 1;
+    		return 0;
+    	}
+    	a = q1.front();
+    	b = q2.front();
+    	q1.pop_front();
+    	q2.pop_front();
+    	if(a > b) {
+    		q1.push_back(b);
+    		q1.push_back(a);
+    	} else {
+    		q2.push_back(a);
+    		q2.push_back(b);
+    	}
+    	cnt++;
+    }
 }
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
-}
+ 

@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 03 April 2022 (Sunday)  3:18:48 PM
 **
 */
  
@@ -176,33 +176,27 @@ int main() {
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
 
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
-}
-
-
-void calculate() {
   int n;
   cin >> n;
   int a[n];
-  map<int, int> mp;
   for(int i = 0; i < n; i++) {
     cin >> a[i];
-    mp[a[i]]++;
   }
-  int ans = 0;
   sort(a, a+n);
-  int cnt = 0;
+  int ans = 0;
   for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+    for(int j = i+1; j < n; j++) {
+      int sm = a[i]+a[j];
+      for(int k = j+1; k < n; k++) {
+        if(a[k] < sm)
+          ans++;
+      }
+    }
   }
   cout << ans;
+
 }
+
+
+
+

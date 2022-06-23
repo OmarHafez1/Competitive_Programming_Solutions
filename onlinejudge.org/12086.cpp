@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 15 May 2022 (Sunday)  1:06:41 AM
 **
 */
  
@@ -21,6 +21,7 @@ typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_nod
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -56,8 +57,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +90,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,43 +163,81 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+struct FenwickTree {
+    vector<int> BIT;  // binary indexed tree
+    int n;
+
+    FenwickTree(int n) {
+        this->n = n + 1;
+        BIT.assign(n + 1, 0);
+    }
+
+    FenwickTree(vector<int> a) : FenwickTree(a.size()) {
+        for (size_t i = 0; i < a.size(); i++)
+            add(i, a[i]);
+    }
+
+    int sum(int idx) {
+        int ret = 0;
+        for (++idx; idx > 0; idx -= idx & -idx)
+            ret += BIT[idx];
+        return ret;
+    }
+
+    int sum(int l, int r) {
+        return sum(r) - sum(l - 1);
+    }
+
+    void add(int idx, int delta) {
+        for (++idx; idx < n; idx += idx & -idx)
+            BIT[idx] += delta;
+    }
+
+    void range_add(int l, int r, int val) {
+        add(l, val);
+        add(r + 1, -val);
+    }
+};
 
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
-
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
-}
-
-
-void calculate() {
+  
   int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  int cs = 1;
+  bool first = 1;
+  while(cin >> n) {
+  	if(n == 0) return 0;
+  	if(!first) cout << endl;
+  	first = 0;
+  	cout << "Case " << cs++ << ":\n";  	
+  	vi a(n);
+  	for(int i = 0; i < n; i++) {
+  		cin >> a[i];
+  	}
+  	FenwickTree f = FenwickTree(a);
+  	string s;
+  	while(1) {
+  		cin >> s;
+  		if(s[0] == 'E') break;
+  		if(s[0] == 'S') {
+  			int x, delta;
+  			cin >> x >> delta;
+  			x--;
+  			f.add(x, delta-a[x]);
+  			a[x] = delta;
+  		} else {
+  			int l, r;
+  			cin >> l >> r;
+  			cout << f.sum(l-1, r-1) << endl;
+  		}
+  	}
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
+  
 }
+   
+   

@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 29 May 2022 (Sunday)  11:35:28 PM
 **
 */
  
@@ -21,6 +21,7 @@ typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_nod
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -172,37 +173,44 @@ void calculate();
 // cout << fixed << setprecision(10);
 
 int main() { 
-  ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
-  //freopen("output.txt", "w", stdout); 
+    ios_base::sync_with_stdio(false); cin.tie(NULL); 
+    //freopen("input.txt", "r", stdin); 
+    //freopen("output.txt", "w", stdout); 
 
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
+    int t;
+    cin >> t;
+    while(t--) {
+        calculate();
+        newl;
+    }
+}
+    
+int sq(int x) {
+	return floor(sqrt(x)) == ceil(sqrt(x));
 }
 
-
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
+	int n;
+    cin >> n;
+    vector<vector<ull>> a(n);
+    a[0].push_back(0);
+    ull ans = 1;
+    bool ok = 1;
+    while(ok) {
+    	ok = 0;
+    	for(int i = 0; i < n; i++) {
+    		if(a[i].size() == 0) {
+    			a[i].push_back(ans);
+    			ans++;
+    			ok = 1;
+    			break;
+    		} else if(sq(a[i].back() + ans)) {
+    			a[i].push_back(ans);
+    			ans++;
+    			ok = 1;
+    			break;
+    		}
+    	}
+    }
+    cout << ans-1;
 }

@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 16 May 2022 (Monday)  7:04:10 PM
 **
 */
  
@@ -21,6 +21,7 @@ typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_nod
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -56,8 +57,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +90,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,43 +163,51 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
+vb get_primes(ull n) {
+  vb primes(n+1, 1);
+  primes[1] = 0;
+  for (ull i = 2; i * i <= n; i++) {
+    if (primes[i]) {
+      for (ull j = i * i; j <= n; j += i)
+        primes[j] = 0;
+    }
+  }
+  return primes;
+}
+
 int main() { 
-  ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
-  //freopen("output.txt", "w", stdout); 
+	ios_base::sync_with_stdio(false); cin.tie(NULL); 
+	//freopen("input.txt", "r", stdin); 
+	//freopen("output.txt", "w", stdout); 
 
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
+	int q;
+	cin >> q;
+	int N = 2e6+1;
+	vi a(N);
+	vb tmp = get_primes(N/2+1);
+	vull primes;
+	for(int i = 2; i < N/2+1; i++) {
+		if(tmp[i]) primes.push_back(i);
+	}
+	for(int i = 0; i < primes.size(); i++) {
+		for(int j = i; j < primes.size(); j++) {
+			if(primes[i]*primes[j] >= N) break;
+			a[primes[i]*primes[j]]++;
+		}
+	}
+	for(int i = 1; i < a.size(); i++) {
+		a[i] += a[i-1];
+	}
+	int l, r;
+	while(q--) {
+		cin >> l >> r;
+		if(l == 0) l++;
+		cout << a[r]-a[l-1] << endl;
+	}
+	
 }
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
-}
+	 
+	 

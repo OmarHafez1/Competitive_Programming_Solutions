@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 21 April 2022 (Thursday)  4:28:03 PM
 **
 */
  
@@ -56,8 +56,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +89,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,43 +162,50 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+int n, m;
+char a[51][51];
+
+int x[] = {0, 1, 0, -1};
+int y[] = {1, 0, -1, 0};
+
+vec<vb> vis(51, vb(51));
+
+bool check(int i, int j, int li, int lj, char ch) {
+  if(i < 0 || j < 0 || i >= n || j >= m || a[i][j] != ch) return 0;
+  if(a[i][j] == ch && vis[i][j]) return 1;
+  vis[i][j] = 1;
+  bool res = 0;
+  for(int k = 0; k < 4; k++) {
+    if(i+x[k] == li && j+y[k] == lj) continue;
+    res |= check(i+x[k], j+y[k], i, j, ch);
+  }
+  return res;  
+}
 
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
-
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
-}
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
+  
+  cin >> n >> m;
   for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+    for(int j = 0; j < m; j++) {
+      cin >> a[i][j];
+    }
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
   for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+    for(int j = 0; j < m; j++) {
+      if(vis[i][j]) continue;
+      if(check(i, j, -1, -1, a[i][j])) {
+        cout << "Yes";
+        return 0;
+      }
+    }
   }
-  cout << ans;
+  cout << "No";
 }
+   
+   

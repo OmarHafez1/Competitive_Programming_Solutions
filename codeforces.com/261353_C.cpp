@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 19 March 2022 (Saturday)  4:35:39 PM
 **
 */
  
@@ -56,8 +56,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +89,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,43 +162,63 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+vec<vi> a(4, vi(4));
+bool check(int x, int y) {
+  int cnt = 0;
+  if(x+3 <= 4)
+  for(int i = x; i < x+3; i++) {
+    if(a[i][y] == 1) cnt++;
+    else if(a[i][y] == -1) cnt = -1000;
+  }
+  if(cnt >= 2) {
+    return 1;
+  }
+  cnt = 0;
+  if(x+2 < 4 && y+2 < 4)
+  for(int i = 0; i < 3; i++) {
+    if(a[x+i][y+i] == 1) cnt++;
+    else if(a[i+x][y+i] == -1) cnt = -1000;
+  }
+  if(cnt >= 2) return 1;
+  cnt = 0;
+  if(y+3 <= 4)
+  for(int j = y; j < y+3; j++) {
+    if(a[x][j] == 1) cnt++;
+    else if(a[x][j] == -1) cnt = -1000;
+  }
+  if(cnt >= 2) return 1;
+  cnt = 0;
+  if(y-2 >= 0 && x+2 < 4) 
+  for(int i = 0; i < 3; i++) {
+    if(a[x+i][y-i] == 1) cnt++;
+    else if(a[x+i][y-i] == -1) cnt = -100;
+  }
+  return (cnt >= 2);
+}
 
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
-
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
+  
+  string s;
+  f0r(i, 4) {
+    cin >> s;
+    f0r(j, 4) {
+      if(s[j] == 'x') a[i][j] = 1;
+      else if(s[j] == 'o') a[i][j] = -1;
+    }
   }
-}
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  for(int i = 0; i < 4; i++) {
+    for(int j = 0; j < 4; j++) {
+      if(check(i, j)) {
+        cout << "YES";
+        return 0;
+      }
+    }
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
+  cout << "NO";
 }

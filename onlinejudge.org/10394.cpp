@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 23 June 2022 (Thursday)  2:18:22 PM
 **
 */
  
@@ -21,6 +21,7 @@ typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_nod
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -166,43 +167,42 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
 
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
+int lim = 2e7+10;
+
+vb primes;
+
+vb get_primes(ull n) {
+  vb primes(n+1, 1);
+  primes[1] = 0;
+  for (ull i = 2; i * i <= n; i++) {
+    if (primes[i]) {
+      for (ull j = i * i; j <= n; j += i)
+        primes[j] = 0;
+    }
+  }
+  return primes;
+}
+
 int main() { 
-  ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
-  //freopen("output.txt", "w", stdout); 
+    ios_base::sync_with_stdio(false); cin.tie(NULL); 
+    //freopen("input.txt", "r", stdin); 
+    //freopen("output.txt", "w", stdout); 
 
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
+    primes = get_primes(lim);
+    vi ans;
+    for(int i = 3; i < lim; i+=2) {
+    	if(primes[i] && primes[i+2]) {
+    		ans.push_back(i);
+    	} 
+    }
+    int x;
+    while(cin >> x) {
+    	x--;
+    	cout << "(" << ans[x] << ", " << ans[x]+2 << ")" << endl;
+    }
 }
 
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
-}

@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 03 April 2022 (Sunday)  3:18:48 PM
 **
 */
  
@@ -180,29 +180,67 @@ int main() {
   cin >> t;
   while(t--) {
     calculate();
-    newl;
   }
 }
 
+struct DSU {
+  int N;
+  vector<int> size, dsu;
+
+  DSU(int n) {
+    N = n+1;
+    size = vector<int> (N, 1);
+    dsu = vector<int> (N);
+    for(int i = 0; i < N; i++) {
+      dsu[i] = i;
+    }
+  }
+
+  int root(int a) {
+    while(a != dsu[a]) {
+      dsu[a] = dsu[dsu[a]];
+      a = dsu[a];
+    }
+    return a;
+  }
+
+  void unite(int a, int b) {
+    a = root(a);
+    b = root(b);
+    if(a == b) return;
+    if(size[a] > size[b]) swap(a, b);
+    dsu[a] = dsu[b];
+    size[b] += size[a];
+  }
+
+  int get_size(int a) {
+    return size[root(a)];
+  }
+
+  bool same_set(int a, int b) {
+    return (root(a) == root(b));
+  }
+
+};
 
 void calculate() {
+  int count = 1;
+  map<string, int> mp;
   int n;
   cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  DSU dsu = DSU(n);
+  string a, b;
+  while(n--) {
+    cin >> a >> b;
+    if(mp[a] == 0) {
+      mp[a] = count;
+      count++;
+    } 
+    if(mp[b] == 0) {
+      mp[b] = count;
+      count++;
+    }
+    dsu.unite(mp[a], mp[b]);
+    cout << dsu.get_size(mp[a]) << endl;
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
 }

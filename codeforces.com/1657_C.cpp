@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 22 March 2022 (Tuesday)  5:19:49 PM
 **
 */
  
@@ -187,22 +187,43 @@ int main() {
 
 void calculate() {
   int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  string s;
+  cin >> n >> s;
+  if(n == 1) {
+    cout << "0 " << n;
+    return; 
   }
-  int ans = 0;
-  sort(a, a+n);
+  if(n == 2) {
+    if(s[0] == ')' && s[1] == '(') {
+      cout << "0 2";
+    } else {
+      cout << "1 0";
+    }
+    return;
+  }
   int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  int i = 0;
+  int jj = 0;
+  for(; i < n-1; i++) {
+    if(s[i] == s[i+1] || s[i] == '(' && s[i+1] == ')') {
+      i++;
+      jj = i;
+      cnt++;
+    } else {
+      i++;
+      char ch = s[i];
+      while(i < n && s[i] == ch) {
+        i++;
+      }    
+      if(i < n) {
+        cnt++;
+        jj = i;
+      }
+    }
   }
-  cout << ans;
+  if(cnt == 0) {
+    cout << "0 " << n;
+    return;
+  }
+  cout << cnt << " " << n-jj-1;
 }

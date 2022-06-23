@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 08 March 2022 (Tuesday)  1:58:54 PM
 **
 */
  
@@ -169,40 +169,43 @@ using vpdp = vector<pdb>;
 void calculate();
 
 // fflush(stdout);
-// cout << fixed << setprecision(10);
 
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
 
+  cout << fixed << setprecision(2);
+
+  cout << "INTERSECTING LINES OUTPUT\n";
   int t;
   cin >> t;
   while(t--) {
     calculate();
     newl;
   }
+  cout << "END OF OUTPUT\n";
 }
 
 
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  int x[4], y[4];
+  for(int i = 0; i < 4; i++){
+    cin >> x[i] >> y[i];
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  int a1 = y[1]-y[0];
+  int a2 = y[3]-y[2];
+  int b1 = x[0]-x[1];
+  int b2 = x[2]-x[3];
+  int c1 = b1*y[0]+a1*x[0];
+  int c2 = b2*y[3]+a2*x[3];
+  int d1 = b1*a2-b2*a1;
+  int d2 = a1*b2-a2*b1;
+  if(d1 == 0) {
+    cout << ((a1*x[3]+b1*y[3] == c1)? "LINE" : "NONE");
+    return;
   }
-  cout << ans;
+  ld iy = (c1*a2-c2*a1)*1.0/d1;
+  ld ix = (c1*b2-c2*b1)*1.0/d2;
+  cout << "POINT " << ix << " " << iy;
 }

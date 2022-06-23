@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 11 March 2022 (Friday)  8:18:00 AM
 **
 */
  
@@ -169,13 +169,13 @@ using vpdp = vector<pdb>;
 void calculate();
 
 // fflush(stdout);
-// cout << fixed << setprecision(10);
 
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
 
+  cout << fixed << setprecision(10);
   int t;
   cin >> t;
   while(t--) {
@@ -184,25 +184,27 @@ int main() {
   }
 }
 
+int fit(int i, int j) {
+  if(i == 0) {
+    if(j == 1) return 2;
+    return 1;
+  }
+  return 0;
+}
 
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
+  int x[3], y[3];
+  f0r(i, 3) {
+    cin >> x[i] >> y[i];
+  } 
   int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  for(int i = 0; i < 3; i++) {
+    for(int j = i+1; j < 3; j++) {
+      if(y[i] == y[j] && y[i] && y[fit(i, j)] < y[i]) {
+        ans = abs(x[j]-x[i]);
+        break;
+      }
+    }
   }
   cout << ans;
 }

@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 21 April 2022 (Thursday)  3:34:37 PM
 **
 */
  
@@ -56,8 +56,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +89,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,8 +162,6 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
@@ -175,34 +169,28 @@ int main() {
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
-
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
-}
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
+  
+  int n, d;
+  cin >> n >> d;
+  vpi a(n);
   for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+    cin >> a[i].first >> a[i].second;
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
+  sor(a);
+  ull ans = 0;
+  int lst = 0;
+  ull tmp = 0;
   for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+    tmp += a[i].second;
+    while(a[i].first - a[lst].first >= d) {
+      tmp -= a[lst].second;
+      lst++;
+    }
+    ans = max(ans, tmp);
   }
+  ans = max(ans, tmp);
   cout << ans;
+  
 }
+   
+   

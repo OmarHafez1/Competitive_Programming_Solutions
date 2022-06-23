@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 18 May 2022 (Wednesday)  3:12:36 AM
 **
 */
  
@@ -21,6 +21,7 @@ typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_nod
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const long long INF = 2e18;
 
 //
 using ui = unsigned int;
@@ -56,8 +57,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +90,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,43 +163,104 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
+int n, m;
+ll k;
+
+const int N = 2e5+10;
+
+int a[N];
+
+vector<vector<int>> adj(N);
+
+
+vector<vector<int>> nwaj(N);
+vector<bool> visited(N);
+
+vector<ll> dp(N);
+
+ll dfs(int u) {
+	if(visited[u]) return INF;
+	if(dp[u] != -1) return dp[u];
+	visited[u] = 1;
+
+	dp[u] = 1;
+
+	fe(v, nwaj[u]) {
+		dp[u] = max(dp[u], dfs(v)+1);
+		if(dp[u] >= INF) dp[u] = INF;
+	}
+	visited[u] = 0;
+	return dp[u];
+}
+
+
+bool ok(int x) {
+	for(int i = 0; i < n; i++) {
+		nwaj[i].clear();
+		visited[i] = 0;
+		dp[i] = -1;
+	}
+
+	for(int i = 0; i < n; i++) {
+		if(a[i] <= x) {
+			fe(w, adj[i]) {
+				if(a[w] <= x) {
+					nwaj[i].push_back(w);
+				}
+			}
+		}
+	}
+
+	ll ret = -1;
+	for(int i = 0; i < n; i++) {
+		if(a[i] <= x)
+			ret = max(ret, dfs(i));
+	}
+
+	return ret >= k;
+}
+
+
 int main() { 
-  ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
-  //freopen("output.txt", "w", stdout); 
+	ios_base::sync_with_stdio(false); cin.tie(NULL); 
+	//freopen("input.txt", "r", stdin); 
+	//freopen("output.txt", "w", stdout); 
 
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
+	cin >> n >> m >> k;
+	int mx = 0;
+	for(int i = 0; i < n; i++) {
+		cin >> a[i];
+		mx = max(mx, a[i]);
+	}
+	int u, v;
+	for(int i = 0; i < m; i++) {
+		cin >> u >> v;
+		u--; v--;
+		adj[u].push_back(v);
+	}
+
+	if(!ok(mx)) {
+		cout << -1;
+		return 0;
+	}
+
+	int l = 1, r = 1e9+100, mid;
+	int ans = -1;
+	while(l <= r) {
+		mid = (l+r)/2;
+		if(ok(mid)) {
+			r = mid-1;
+			ans = mid;
+		} else {
+			l = mid+1;
+		}
+	}
+
+	cout << ans;
+	
 }
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
-}
+	 
+	 

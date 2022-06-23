@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 19 May 2022 (Thursday)  7:37:22 PM
 **
 */
  
@@ -21,6 +21,7 @@ typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_nod
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -171,38 +172,78 @@ void calculate();
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
-int main() { 
-  ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
-  //freopen("output.txt", "w", stdout); 
 
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
+//auto it = std::find_if( sortList.begin(), sortList.end(), [&User](const std::pair<std::string, int>& element){ return element.first == User.name;} );
+/*
+bool isEqual(const std::pair<std::string, int>& element)
+{
+    return element.first ==  User.name;
+}
+it = std::find_if( sortList.begin(), sortList.end(), isEqual );
+*/
+
+
+vector<int> down;
+
+int main() { 
+    ios_base::sync_with_stdio(false); cin.tie(NULL); 
+    //freopen("input.txt", "r", stdin); 
+    //freopen("output.txt", "w", stdout); 
+
+    int lst = 1;
+    int add = 4;
+    while(lst <= 1e6) {
+      down.push_back(lst);
+      lst += add;
+      add += 4;
+    }
+
+    int t;
+    cin >> t;
+    while(t--) {
+        calculate();
+        newl;
+    }
 }
 
 
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
+    int n;
+    cin >> n;
+    auto it = lower_bound(all(down), n);
+    if(*it == n) {
+      cout << "0 " << -1*distance(down.begin(), it);
+      return;
+    }
+    it--;
+    int a = 0;
+    int cnt = distance(down.begin(), it)+1;
+    int x = 0, y = (-1*distance(down.begin(), it));
+    // 1    -1
+    int tmp = n-(*it);
+    while(tmp > 0) { 
+      if(a == 0) {
+        tmp--;
+        x++;
+      } else if(a == 1) {
+        x += min(cnt-1, tmp);
+        y += min(cnt-1, tmp);
+        tmp -= cnt-1;
+      } else if(a == 2) {
+        x -= min(cnt, tmp);
+        y += min(cnt, tmp);
+      } else if(a == 3) {
+        x -= min(cnt, tmp);
+        y -= min(cnt, tmp);
+      } else {
+        x += min(cnt, tmp);
+        y -= min(cnt, tmp);
+      }
+      if(a > 1) {
+        tmp -= cnt;
+      }
+      a++;
+      a %= 5;
+    }
+    cout << x << ' ' << y;
 }

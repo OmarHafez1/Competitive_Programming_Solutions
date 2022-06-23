@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 22 March 2022 (Tuesday)  4:47:41 PM
 **
 */
  
@@ -184,25 +184,24 @@ int main() {
   }
 }
 
+bool check(int x, int y) {
+  int tmp = x*x+y*y;
+  int tt = sqrt(tmp);
+  if(tt*tt == tmp) return 1;
+  return 0;
+}
+
 
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  int x, y;
+  cin >> x >> y;
+  if(x == 0 && y == 0) {
+    cout << 0;
+    return;
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  if(check(x, y)) {
+    cout << 1;
+    return;
   }
-  cout << ans;
+  cout << 2;
 }

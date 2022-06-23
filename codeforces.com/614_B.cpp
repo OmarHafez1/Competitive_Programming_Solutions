@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 19 April 2022 (Tuesday)  1:01:16 PM
 **
 */
  
@@ -56,8 +56,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +89,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,43 +162,44 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+bool check(string tmp) {
+  if(tmp[0] != '1') return 0;
+  for(int i = 1; i < tmp.length(); i++) {
+    if(tmp[i] != '0') return 0;
+  } 
+  return 1;
+}
 
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
-
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
-}
-
-
-void calculate() {
+  
   int n;
   cin >> n;
-  int a[n];
-  map<int, int> mp;
+  string tmp;
+  int mx = 0;
+  string nt = "1";
   for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+    cin >> tmp;
+    if(tmp == "0") {
+      cout << 0;
+      return 0;
+    }
+    if(check(tmp)) {
+      mx += tmp.length()-1;
+    } else {
+      nt = tmp;
+    }
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  cout << nt;
+  for(int i = 0; i < mx; i++) {
+    cout << 0;
   }
-  cout << ans;
+  
 }
+   
+   

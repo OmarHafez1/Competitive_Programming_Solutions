@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 05 March 2022 (Saturday)  4:39:05 PM
 **
 */
  
@@ -171,11 +171,21 @@ void calculate();
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
+vll f;
+
+ll N = 1e12;
+
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
 
+  f.pushb(1);
+  int tmp = 2;
+  while(f.back()*tmp <= N) {
+    f.pushb(f.back()*tmp);
+    tmp++;
+  }
   int t;
   cin >> t;
   while(t--) {
@@ -184,25 +194,20 @@ int main() {
   }
 }
 
-
 void calculate() {
-  int n;
+  ll n;
   cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  int ans = cnt_1s(n);
+  for(int i = 0; i < pow(2, f.size()); i++) {
+    ull x = 0;
+    for(int j = 0; j < f.size() && x < N; j++) {
+      if(i & 1 << j) {
+        x += f[j];
+      }
+    }
+    if(x <= n) {
+      ans = min(cnt_1s(i) + cnt_1s(n-x), ans);
+    }
   }
   cout << ans;
 }

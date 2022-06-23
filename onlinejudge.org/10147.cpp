@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 02 April 2022 (Saturday)  5:32:49 PM
 **
 */
  
@@ -180,29 +180,90 @@ int main() {
   cin >> t;
   while(t--) {
     calculate();
-    newl;
+   if(t != 0) newl;
   }
 }
 
+int dis(int x1, int y1, int x2, int y2) {
+  return pow(x1-x2, 2) + pow(y1-y2, 2);
+}
+
+struct DSU {
+  int N;
+  vector<int> size, dsu;
+
+  DSU(int n) {
+    N = n+1;
+    size = vector<int> (N, 1);
+    dsu = vector<int> (N);
+    for(int i = 0; i < N; i++) {
+      dsu[i] = i;
+    }
+  }
+
+  int root(int a) {
+    while(a != dsu[a]) {
+      dsu[a] = dsu[dsu[a]];
+      a = dsu[a];
+    }
+    return a;
+  }
+
+  void unite(int a, int b) {
+    a = root(a);
+    b = root(b);
+    if(a == b) return;
+    if(size[a] > size[b]) swap(a, b);
+    dsu[a] = dsu[b];
+    size[b] += size[a];
+  }
+
+  int get_size(int a) {
+    return size[root(a)];
+  }
+
+  bool same_set(int a, int b) {
+    return (root(a) == root(b));
+  }
+
+};
 
 void calculate() {
   int n;
   cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  DSU dsu = DSU(n);
+  int x[n], y[n];
+  f0r(i, n) {
+    cin >> x[i] >> y[i];
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  int q;
+  cin >> q;
+  int xx, yy;
+  while(q--) {
+    cin >> xx >> yy;
+    dsu.unite(yy, xx);
   }
-  cout << ans;
+  vec<tuple<int, int, int>> t;
+  for(int i = 0; i < n; i++) {
+    for(int j = i+1; j < n; j++) {
+      if(dsu.same_set(i+1, j+1)) continue;
+      t.push_back({dis(x[i], y[i], x[j], y[j]), i+1, j+1});
+    }
+  }
+  sor(t);
+  vpi ans;
+  for(auto it = t.begin(); it != t.end(); it++) {
+    tuple<int, int, int> tmp = *it;
+    if(dsu.same_set(get<1>(tmp), get<2>(tmp))) continue;
+    dsu.unite(get<1>(tmp), get<2>(tmp));
+    ans.push_back({get<1>(tmp), get<2>(tmp)});
+  }
+  if(ans.size() == 0) {
+    cout << "No new highways need\n";
+    return;
+  }
+  fe(x, ans) {
+    cout << x.first << " " << x.second << endl;
+  }
+
 }

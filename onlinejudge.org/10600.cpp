@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 05 April 2022 (Tuesday)  6:05:21 PM
 **
 */
  
@@ -185,24 +185,87 @@ int main() {
 }
 
 
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+int n, m;
+
+struct DSU {
+  int N;
+  vector<int> size, dsu;
+
+  DSU(int n) {
+    N = n+1;
+    size = vector<int> (N, 1);
+    dsu = vector<int> (N);
+    for(int i = 0; i < N; i++) {
+      dsu[i] = i;
+    }
   }
-  int ans = 0;
-  sort(a, a+n);
+
+  int root(int a) {
+    while(a != dsu[a]) {
+      dsu[a] = dsu[dsu[a]];
+      a = dsu[a];
+    }
+    return a;
+  }
+
+  void unite(int a, int b) {
+    a = root(a);
+    b = root(b);
+    if(a == b) return;
+    if(size[a] > size[b]) swap(a, b);
+    dsu[a] = dsu[b];
+    size[b] += size[a];
+  }
+
+  int get_size(int a) {
+    return size[root(a)];
+  }
+
+  bool same_set(int a, int b) {
+    return (root(a) == root(b));
+  }
+
+};
+
+int gg(vec<tuple<int, int, int>> &a, int no) {
+  DSU dsu = DSU(n);
+  int ind = -1;
+  int res = 0;
   int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  fe(x, a) {
+    ind++;
+    if(ind == no) continue;
+    if(dsu.same_set(get<1>(x), get<2>(x))) continue;
+    dsu.unite(get<1>(x), get<2>(x));
+    res += get<0>(x);
+    cnt++;
   }
-  cout << ans;
+  if(cnt != n-1) return INT_MAX;
+  return res;
+}
+
+void calculate() {
+  cin >> n >> m;
+  vec<tuple<int, int, int>> a(m);
+  int x, y, c;
+  for(int i = 0; i < m; i++) {
+    cin >> x >> y >> c;
+    a[i] = {c, x, y};
+  }
+  sor(a);
+  DSU dsu = DSU(n);
+  vi used;
+  int ans1 = 0, ans2 = INT_MAX;
+  int ind = -1;
+  fe(x, a) {
+    ind++;
+    if(dsu.same_set(get<1>(x), get<2>(x))) continue;
+    dsu.unite(get<1>(x), get<2>(x));
+    ans1 += get<0> (x);
+    used.push_back(ind);
+  }
+  fe(x, used) {
+    ans2 = min(ans2, gg(a, x));
+  }
+  cout << ans1 << ' ' << ans2;
 }

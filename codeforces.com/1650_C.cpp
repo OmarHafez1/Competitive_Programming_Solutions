@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 08 March 2022 (Tuesday)  5:13:46 PM
 **
 */
  
@@ -186,23 +186,49 @@ int main() {
 
 
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  int n, m;
+  cin >> n >> m;
+  vpi a(m), b(m);
+  map<int, int> ind;
+  for(int i = 0; i < m; i++) {
+    cin >> a[i].second >> a[i].first;
+    b[i].second = a[i].first;
+    b[i].first = a[i].second;
+    ind[a[i].second] = i+1;
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  sor(b);
+  sor(a);
+  ll sum = 0;
+  map<int, int> ava;
+  for(int i = 0; i < 2*n; i++) {
+    sum += a[i].first;
+    ava[a[i].second]++;
   }
-  cout << ans;
+  cout << sum << endl;
+  int left = 0, right = m-1;
+  int tot = 0;
+  while(tot < n) {
+    while(!ava[b[right].first]) right--;
+    while(!ava[b[left].first]) left++;
+    cout << ind[b[left].first] <<  "  " << ind[b[right].first] << endl;
+    ava[b[right].first]--;
+    ava[b[left].first]--;
+    right--;
+    left++;
+    tot++;
+  }
 }
+
+
+/*
+
+1  0 10
+2  -2 1
+3  4 10
+4  11 20
+6  7 -1
+6  9 1
+7  2 3
+8  5 -2
+
+*/

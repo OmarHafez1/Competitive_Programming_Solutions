@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 11 March 2022 (Friday)  4:52:43 PM
 **
 */
  
@@ -186,23 +186,37 @@ int main() {
 
 
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
+  int n, m;
+  cin >> n >> m;
+  vec<vb> a(n+2, vb(m+2));
+  string tmp;
   for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+    cin >> tmp;
+    for(int j = 0; j < m; j++) {
+      a[i+1][j+1] = (tmp[j] == '1');
+    }
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  for(int i = 1; i <= n; i++) {
+    for(int j = 1; j <= m; j++) {
+      if(!a[i][j]) {
+        if(a[i-1][j-1] && a[i-1][j] && a[i][j-1]) {
+          cout << "NO";
+          return;
+        }
+        if(a[i-1][j] && a[i-1][j+1] && a[i][j+1]) {
+          cout << "NO";
+          return;
+        }
+        if(a[i][j+1] && a[i+1][j+1] && a[i+1][j]) {
+          cout << "NO";
+          return;
+        }
+        if(a[i][j-1] && a[i+1][j-1] && a[i+1][j]) {
+          cout << "NO";
+          return;
+        }
+      }
+    }
   }
-  cout << ans;
+  cout << "YES";
 }

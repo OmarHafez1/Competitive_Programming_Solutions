@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 08 June 2022 (Wednesday)  7:01:50 PM
 **
 */
  
@@ -21,6 +21,7 @@ typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_nod
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -172,37 +173,87 @@ void calculate();
 // cout << fixed << setprecision(10);
 
 int main() { 
-  ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
-  //freopen("output.txt", "w", stdout); 
+    ios_base::sync_with_stdio(false); cin.tie(NULL); 
+    //freopen("input.txt", "r", stdin); 
+    //freopen("output.txt", "w", stdout); 
 
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
+    int t;
+    cin >> t;
+    while(t--) {
+        calculate();
+        if(t != 0) newl;
+    }
 }
 
 
+struct DSU {
+  int N;
+  vector<int> size, dsu;
+
+  DSU(int n) {
+    N = n+1;
+    size = vector<int> (N, 1);
+    dsu = vector<int> (N);
+    for(int i = 0; i < N; i++) {
+      dsu[i] = i;
+    }
+  }
+
+  int root(int a) {
+    while(a != dsu[a]) {
+      dsu[a] = dsu[dsu[a]];
+      a = dsu[a];
+    }
+    return a;
+  }
+
+  void unite(int a, int b) {
+    a = root(a);
+    b = root(b);
+    if(a == b) return;
+    if(size[a] > size[b]) swap(a, b);
+    dsu[a] = dsu[b];
+    size[b] += size[a];
+  }
+
+  int get_size(int a) {
+    return size[root(a)];
+  }
+
+  bool same_set(int a, int b) {
+    return (root(a) == root(b));
+  }
+
+};
+
+
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
+    int n, m;
+    cin >> n >> m;
+    map<string, int> mp;
+    int ind = 1;
+    DSU dsu = DSU(n+1);
+    string a, b;
+    int cost;
+    vector<tuple<int, int, int>> vec;
+    for(int i = 0; i < m; i++) {
+    	cin >> a >> b >> cost;
+    	if(mp[a] == 0) {
+    		mp[a] = ind;
+    		ind++;
+    	} 
+    	if(mp[b] == 0) {
+    		mp[b] = ind;
+    		ind++;
+    	}
+    	vec.push_back({cost, mp[a], mp[b]});
+    }
+    sor(vec);
+    ll ans = 0;
+    for(auto it = vec.begin(); it != vec.end(); it++) {
+    	if(dsu.same_set(get<1>(*it), get<2>(*it))) continue;
+    	dsu.unite(get<1>(*it), get<2>(*it));
+    	ans += get<0>(*it);
+    }
+	cout << ans << endl;
 }

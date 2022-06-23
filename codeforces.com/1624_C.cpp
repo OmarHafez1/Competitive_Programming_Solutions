@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 08 March 2022 (Tuesday)  3:38:21 PM
 **
 */
  
@@ -189,20 +189,22 @@ void calculate() {
   int n;
   cin >> n;
   int a[n];
-  map<int, int> mp;
+  vb cnt(n+1);
   for(int i = 0; i < n; i++) {
     cin >> a[i];
-    mp[a[i]]++;
+    while(a[i] > n) a[i]/=2;
+    while(a[i] && cnt[a[i]]) {
+      a[i]/=2;
+    }
+    if(a[i] == 0) cnt[1] = 1;
+    else cnt[a[i]] = 1;
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  for(int i = 1; i <= n; i++) {
+    if(!cnt[i]) {
+      cout << "NO";
+      return;
+    }
   }
-  cout << ans;
+  cout << "YES";
 }
+

@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 15 May 2022 (Sunday)  2:23:03 PM
 **
 */
  
@@ -21,6 +21,7 @@ typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_nod
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -56,8 +57,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +90,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,8 +163,6 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
@@ -175,34 +170,48 @@ int main() {
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
-
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
+  
+  int n, q;
+  cin >> n >> q;
+  mset<int> r, c;
+  int t, x, y, x2, y2;
+  for(int i = 0; i <= n+100; i++) {
+  	r.insert(i);
+  	c.insert(i);
   }
+  vi cx(n+1), cy(n+1);
+  while(q--) {
+  	cin >> t >> x >> y;
+  	if(t == 1) {
+  		cx[x]++;
+  		if(cx[x] == 1)
+  			c.erase(x);
+  		cy[y]++;
+  		if(cy[y] == 1)
+  			r.erase(y);
+  	} else if(t == 2) {
+  		if(cy[y] == 1)
+  			r.insert(y);
+  		if(cx[x] == 1) 
+  			c.insert(x);
+  		cx[x]--;
+  		cy[y]--;
+  	} else {
+  		cin >> x2 >> y2;
+  		auto itx = c.lower_bound(x);
+  		if((*itx) > x2) {
+  			cout << "Yes\n"; 
+  			continue;
+  		} 
+  		auto ity = r.lower_bound(y);
+  		if((*ity) > y2) {
+  			cout << "Yes\n";
+  			continue;
+  		}
+  		cout << "No\n";
+  	}
+  }
+  
 }
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
-}
+   
+   

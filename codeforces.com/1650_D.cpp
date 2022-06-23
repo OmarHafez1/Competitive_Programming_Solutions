@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 10 March 2022 (Thursday)  11:01:45 AM
 **
 */
  
@@ -184,25 +184,42 @@ int main() {
   }
 }
 
+deque<int> q;
+int n;
+int find(int element) {
+  int j = 0;
+  for(auto it = q.begin(); it != q.end(); it++){
+    if(*it == element) {
+      return j;
+    }
+    j++;
+  }
+  return j;
+}
+
+void sp(int j) {
+  while(j--) {
+    q.push_back(q.front());
+    q.popf;
+  }  
+  q.popb;
+}
 
 void calculate() {
-  int n;
   cin >> n;
-  int a[n];
-  map<int, int> mp;
+  int tmp;
+  q = deque<int>();
   for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+    cin >> tmp;
+    q.push_back(tmp);
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
+  vi ans(n);
+  for(int i = n-1; i > 0; i--) {
+    ans[i] = find(i+1)+1;
+    if(ans[i] == i+1) ans[i] = 0;
+    sp(ans[i]);
+  }
   for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+    cout << ans[i] << " ";
   }
-  cout << ans;
 }

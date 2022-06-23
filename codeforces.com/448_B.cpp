@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 15 March 2022 (Tuesday)  4:53:16 PM
 **
 */
  
@@ -56,8 +56,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +89,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,8 +162,6 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
@@ -175,34 +169,40 @@ int main() {
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
-
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
+  
+  string s, t;
+  cin >> s >> t;
+  int n = s.length(), m = t.length();
+  if(n < m) {
+    cout << "need tree";
+    return 0;
   }
-}
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
+  vi a(26), b(26);
   for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+    a[s[i]-'a']++;
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
+  for(int i = 0; i < m; i++) {
+    b[t[i]-'a']++;
+  }
+  for(int i = 0; i < 26; i++) {
+    if(a[i] < b[i]) {
+      cout << "need tree";
+      return 0;
+    }
+  }
+  int ind = 0;
   for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+    if(s[i] == t[ind]) ind++;
   }
-  cout << ans;
+  if(ind == m) {
+    cout << "automaton";
+    return 0;
+  }
+  if(n > m) {
+    cout << "both";
+    return 0;
+  }
+  cout << "array";
 }
+   
+   

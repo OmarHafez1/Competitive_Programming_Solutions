@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 05 March 2022 (Saturday)  8:56:06 AM
 **
 */
  
@@ -155,10 +155,10 @@ using vpdp = vector<pdb>;
 #define c_reflectO(v,m) (conj((v)/(m))*(m))
 
 // bits
-#define cnt_1s(b) __builtin_popcountll(b)
-#define begin_0s(b) __builtin_clzll(b) 
-#define end_0s(b) __builtin_ctzll(b) 
-#define ffno(b) find_first_not_ofll(b) 
+#define cnt_1s(b) __builtin_popcount(b)
+#define begin_0s(b) __builtin_clz(b) 
+#define end_0s(b) __builtin_ctz(b) 
+#define ffno(b) find_first_not_of(b) 
 
 // permutation 
 #define n_perm next_permutation
@@ -189,20 +189,20 @@ void calculate() {
   int n;
   cin >> n;
   int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  for(auto &i : a) {
+    cin >> i;
   }
-  int ans = 0;
   sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  int left = 1, right = n-1;
+  ull lsm = a[0], rsm = 0;
+  while(left < right) {
+    lsm += a[left++];
+    rsm += a[right--];
+    if(lsm < rsm) {
+      cout << "YES";
+      return;
+    } 
   }
-  cout << ans;
+
+  cout << "NO";
 }

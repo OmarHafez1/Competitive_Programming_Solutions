@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 19 April 2022 (Tuesday)  2:09:58 AM
 **
 */
  
@@ -56,8 +56,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +89,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,43 +162,82 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+bool ok = 1;
+
+void calc(map<string, int> &mp, vec<vs> &a) {
+  sor(a[1]);
+  if(!ok || a[1].size() == 0 || a[1][0] != "A") {
+    cout << "not complete\n";
+    return;
+  }
+  int sz = a.size()-1;
+  for(int j = 1; j < 300; j++) {
+    sor(a[j]);
+    for(auto it = a[j].begin(); it != a[j].end(); it++) {
+      string tmp = *it;
+      while(tmp.length() > 1) {
+        tmp.pop_back();
+        if(mp[tmp] == 0) {
+          cout << "not complete\n";
+          return;
+        }
+      }
+    }
+  }
+  for(int i = 0; i < 299; i++) {
+      for(auto it = a[i].begin(); it != a[i].end(); it++) {
+          cout << mp[*it];
+          if(it != prev(a[i].end()) || a[i+1].size() > 0) cout << " ";
+      }
+  }
+  newl;
+}
+
+string trim(string str) {
+    str.erase(str.find_last_not_of(' ')+1);         //suffixing spaces
+    str.erase(0, str.find_first_not_of(' '));       //prefixing spaces
+    return str;
+}
 
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
-
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
+  
+  string tmp;
+  vec<vs> a(300);
+  map<string, int> mp;
+  while (cin >> tmp) {
+    tmp = trim(tmp);
+    if(tmp == "()") {
+      calc(mp, a);
+      ok = 1;
+      for(int i = 1; i < 300; i++) {
+          a[i].clear();
+      }
+      mp.clear();
+      continue;
+    }
+    string s1 = "", s2 = "";
+    bool before = 1;
+    for(int i = 1; i < tmp.size()-1; i++) {
+      if(tmp[i] == ',') {
+        before = 0;
+        continue;
+      }
+      if(before) s1 += tmp[i];
+      else s2 += tmp[i];
+    }
+    s1 = trim(s1);
+    s2 = trim(s2);
+    if(s2 == "") s2 = "A";
+    a[s2.length()].push_back(s2);
+    if(mp[s2] != 0) ok = 0;
+    mp[s2] = stoi(s1);
   }
+  
 }
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
-}
+   

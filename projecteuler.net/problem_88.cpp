@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 07 March 2022 (Monday)  5:45:07 PM
 **
 */
  
@@ -56,8 +56,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +89,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,43 +162,37 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+int N = 12000;
+vi a(N+1, INT_MAX);
+
+void solve(int sum, int mul, int lst, int x) {
+  int k = mul-sum+x;
+  if(lst == 445) return;
+  if(k > N) return;
+  a[k] = min(a[k], mul);
+  solve(sum + lst, mul * lst, lst, x+1);
+  solve(sum, mul, lst+1, x);
+  solve(sum + lst, mul * lst, lst+1, x+1);
+}
 
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
-
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
-}
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  
+  ull ans = 0;
+  solve(0, 1, 2, 0);
+  set<int> st;
+  for(int i = 2; i <= N; i++) {
+    if(a[i] == INT_MAX) continue;
+    if(st.find(a[i]) != st.end()) continue;
+    st.insert(a[i]);
+    ans += a[i];
   }
   cout << ans;
 }
+   
+   

@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 13 May 2022 (Friday)  9:24:07 PM
 **
 */
  
@@ -184,25 +184,31 @@ int main() {
   }
 }
 
+ll a, k;
+
+ll mn, mx;
+
+void cc() {
+  mn = INT_MAX, mx = 0;
+  ll tmp = a;
+  while(tmp) {
+    mn = min(tmp%10, mn);
+    mx = max(tmp%10, mx);
+    tmp/=10;
+  }
+}
+
+void solve(int cnt) {
+  if(cnt == k-1) return;
+  cc();
+  if(mn == 0)
+    return;
+  a += (mn*mx);
+  solve(cnt+1);
+}
 
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
+  cin >> a >> k;
+  solve(0);
+  cout << a;
 }

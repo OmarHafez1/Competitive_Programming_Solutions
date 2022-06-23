@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 15 May 2022 (Sunday)  5:52:20 PM
 **
 */
  
@@ -11,16 +11,9 @@ using namespace std;
 using namespace chrono; 
 using namespace __gnu_pbds;
 
-typedef tree<int,null_type,less<int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_int;
-typedef tree<unsigned int,null_type,less<unsigned int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ui;
-typedef tree<long long,null_type,less<long long>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ll;
-typedef tree<unsigned long long,null_type,less<unsigned long long>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ull;
-typedef tree<double,null_type,less<double>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_db;
-typedef tree<long double,null_type,less<long double>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ld;
-typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_string;
-
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -56,8 +49,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +82,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,43 +155,67 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
+struct FenwickTree {
+    vector<ll> BIT;  // binary indexed tree
+    int n;
+
+    FenwickTree(int n) {
+        this->n = n + 1;
+        BIT.assign(n + 1, 0);
+    }
+
+    FenwickTree(vector<ll> a) : FenwickTree(a.size()) {
+        for (size_t i = 0; i < a.size(); i++)
+            add(i, a[i]);
+    }
+
+    ll sum(ll idx) {
+        ll ret = 0;
+        for (++idx; idx > 0; idx -= idx & -idx)
+            ret += BIT[idx];
+        return ret;
+    }
+
+    ll sum(ll l, ll r) {
+        return sum(r) - sum(l - 1);
+    }
+
+    void add(ll idx, ll delta) {
+        for (++idx; idx < n; idx += idx & -idx)
+            BIT[idx] += delta;
+    }
+
+    void range_add(ll l, ll r, ll val) {
+        add(l, val);
+        add(r + 1, -val);
+    }
+};
+
 int main() { 
-  ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
-  //freopen("output.txt", "w", stdout); 
+	ios_base::sync_with_stdio(false); cin.tie(NULL); 
+	//freopen("input.txt", "r", stdin); 
+	//freopen("output.txt", "w", stdout); 
 
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
+	ll n, q, c;
+	cin >> n >> q >> c;
+	vector<ll> a(n+100);
+	a[0] = c;
+	FenwickTree f = FenwickTree(a);
+	char ch; 
+	ll x, l, r, val;
+	while(q--) {
+		cin >> ch;
+		if(ch == 'Q') {
+			cin >> x;
+			cout << f.sum(x) << endl;
+		} else {
+			cin >> l >> r >> val;
+			f.range_add(l, r, val);
+		}
+	}
 }
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
-}
+	 
+	 

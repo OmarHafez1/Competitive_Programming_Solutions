@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 08 March 2022 (Tuesday)  2:51:16 PM
 **
 */
  
@@ -186,23 +186,24 @@ int main() {
 
 
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  ll a, b, c;
+  cin >> a >> b >> c; 
+  ll n = b-(c-b);
+  if(n >= a && n%a == 0) {
+    cout << "YES";
+    return;
+  }  
+  if((c-a)%2 == 0) {
+    n = a+(c-a)/2;
+    if(n >= b && n%b == 0) {
+      cout << "YES";
+      return;
+    }
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  n = b+(b-a);
+  if(n >= c && n%c == 0) {
+    cout << "YES";
+    return;
   }
-  cout << ans;
+  cout << "NO";
 }

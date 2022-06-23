@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 11 March 2022 (Friday)  5:17:42 PM
 **
 */
  
@@ -186,23 +186,37 @@ int main() {
 
 
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
+  int n, m;
+  cin >> n >> m;
+  string tmp;
+  vec<vb> a(n+2, vb(m+2));
   for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+    cin >> tmp;
+    for(int j = 0; j < m; j++) {
+      a[i+1][j+1] = (tmp[j] == '1');
+    }
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  vec<pi> ansa, ansb;
+  if(a[1][1]) {
+    cout << -1;
+    return;
   }
-  cout << ans;
+  for(int i = n; i > 0; i--) {
+    for(int j = m; j > 1; j--) {
+      if(a[i][j]) {
+        ansa.push_back({i, j-1});
+        ansb.push_back({i,j});
+      } 
+    }
+  }
+  for(int i = n; i > 1; i--) {
+    if(a[i][1]) {
+      ansa.push_back({i-1, 1});
+      ansb.push_back({i, 1});
+    }
+  }
+  cout << ansa.size() << endl;
+  for(int i = 0; i < ansa.size(); i++) {
+    cout << ansa[i].first << " " << ansa[i].second << " " << ansb[i].first << " " << ansb[i].second << endl;
+  }
 }

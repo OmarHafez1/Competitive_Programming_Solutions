@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 14 March 2022 (Monday)  7:51:00 PM
 **
 */
  
@@ -56,8 +56,6 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
-#define fir first
-#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -91,8 +89,6 @@ using vpdp = vector<pdb>;
 #define iset_ld indexed_set_ld
 #define iset_float indexed_set_float
 #define iset_string indexed_set_string
-#define key find_by_order
-#define order order_of_key
 
 // queue
 #define qu queue
@@ -166,43 +162,73 @@ using vpdp = vector<pdb>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+struct DSU {
+  int N;
+  vector<int> size, dsu;
+
+  DSU(int n) {
+    N = n+1;
+    size = vector<int> (N, 1);
+    dsu = vector<int> (N);
+    for(int i = 0; i < N; i++) {
+      dsu[i] = i;
+    }
+  }
+
+  int root(int a) {
+    while(a != dsu[a]) {
+      dsu[a] = dsu[dsu[a]];
+      a = dsu[a];
+    }
+    return a;
+  }
+
+  void unite(int a, int b) {
+    a = root(a);
+    b = root(b);
+    if(a == b) return;
+    if(size[a] > size[b]) swap(a, b);
+    dsu[a] = dsu[b];
+    size[b] += size[a];
+  }
+
+  int get_size(int a) {
+    return size[root(a)];
+  }
+
+  bool same_set(int a, int b) {
+    return (root(a) == root(b));
+  }
+
+};
 
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
-
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
+  
+  int n, m;
+  cin >> n >> m;
+  vec<DSU> colors = vec<DSU>(101, DSU(101));
+  int a, b, c;
+  for(int i = 0; i < m; i++) {
+    cin >> a >> b >> c;
+    colors[c].unite(a, b);
   }
+  int q, u, v;
+  cin >> q;
+  while(q--) {
+    cin >> u >> v;
+    int ans = 0;
+    for(int i = 1; i <= 100; i++) {
+      ans += colors[i].same_set(u, v);
+    }
+    cout << ans << endl;
+  }
+
 }
-
-
-void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
-}
+   
+   

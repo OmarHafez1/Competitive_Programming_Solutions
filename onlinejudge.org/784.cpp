@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 08 June 2022 (Wednesday)  7:19:22 PM
 **
 */
  
@@ -21,6 +21,7 @@ typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_nod
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -113,7 +114,6 @@ using vpdp = vector<pdb>;
 
 // some hacks
 #define endl '\n'
-#define getline(a) scanf("%[^\n]%*c", a);
 #define newl cout<<endl;
 
 #pragma GCC optimize("-Ofast")
@@ -171,38 +171,65 @@ void calculate();
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
-int main() { 
-  ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
-  //freopen("output.txt", "w", stdout); 
+bool first_time = 1;
 
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
+int main() { 
+    ios_base::sync_with_stdio(false); cin.tie(NULL); 
+    //freopen("input.txt", "r", stdin); 
+    //freopen("output.txt", "w", stdout); 
+
+    int t;
+    cin >> t;
+    while(t--) {
+        calculate();
+    }
 }
 
+int xs[] = {0,  0, 1,  1, 1, -1, -1, -1};
+int ys[] = {1, -1, 0, -1, 1, -1,  1, 0};
+
+vector<string> a;
+
+bool ok(int x, int y) {
+	if(x >= a.size() || y >= a[x].length()) return 0;
+	if(x < 0 || y < 0) return 0;
+	char ch = a[x][y];
+	return (ch == ' ' || ch == '*');
+}
+
+void go(int x, int y) {
+	if(!ok(x, y)) return;
+	a[x][y] = '#';
+	for(int i = 0; i < 8; i++) {
+		go(x+xs[i], y+ys[i]);
+	}
+}
 
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
-  }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
-  }
-  cout << ans;
+	a.clear();
+    string s;
+    if(first_time) {
+    	first_time =  0;
+    	getline(cin, s);
+    }
+    while(1) {
+    	getline(cin, s);
+    	a.push_back(s);
+    	if(s[0] == '_') break;
+    }
+    int x, y;
+    for(int i = 0; i < a.size(); i++) {
+    	for(int j = 0; j < a[i].length(); j++) {
+    		if(a[i][j] == '*') {
+    			x = i;
+    			y = j;
+    			i = a.size();
+    			break;
+    		}
+    	}
+    }
+    go(x, y);
+    fe(w, a) {
+    	cout << w << endl;
+    }
 }

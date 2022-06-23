@@ -1,7 +1,7 @@
 /* 
 **
 **   author:  Omar_Hafez
-**   created: 13 May 2022 (Friday)  9:59:02 PM
+**   created: 05 April 2022 (Tuesday)  5:17:55 PM
 **
 */
  
@@ -169,13 +169,14 @@ using vpdp = vector<pdb>;
 void calculate();
 
 // fflush(stdout);
-// cout << fixed << setprecision(10);
 
 int main() { 
   ios_base::sync_with_stdio(false); cin.tie(NULL); 
   //freopen("input.txt", "r", stdin); 
   //freopen("output.txt", "w", stdout); 
+ 
 
+ cout << fixed << setprecision(2);
   int t;
   cin >> t;
   while(t--) {
@@ -184,25 +185,78 @@ int main() {
   }
 }
 
+int dis(int x1, int y1, int x2, int y2) {
+  return pow(x1-x2, 2) + pow(y1-y2, 2);
+}
+
+struct DSU {
+  int N;
+  vector<int> size, dsu;
+
+  DSU(int n) {
+    N = n+1;
+    size = vector<int> (N, 1);
+    dsu = vector<int> (N);
+    for(int i = 0; i < N; i++) {
+      dsu[i] = i;
+    }
+  }
+
+  int root(int a) {
+    while(a != dsu[a]) {
+      dsu[a] = dsu[dsu[a]];
+      a = dsu[a];
+    }
+    return a;
+  }
+
+  void unite(int a, int b) {
+    a = root(a);
+    b = root(b);
+    if(a == b) return;
+    if(size[a] > size[b]) swap(a, b);
+    dsu[a] = dsu[b];
+    size[b] += size[a];
+  }
+
+  int get_size(int a) {
+    return size[root(a)];
+  }
+
+  bool same_set(int a, int b) {
+    return (root(a) == root(b));
+  }
+
+};
 
 void calculate() {
-  int n;
-  cin >> n;
-  int a[n];
-  map<int, int> mp;
-  for(int i = 0; i < n; i++) {
-    cin >> a[i];
-    mp[a[i]]++;
+  int s, p;
+  cin >> s >> p;
+  int x[p], y[p];
+  for(int i = 0; i < p; i++) {
+    cin >> x[i] >> y[i];
   }
-  int ans = 0;
-  sort(a, a+n);
-  int cnt = 0;
-  for(int i = 0; i < n; i++) {
-    if(mp[a[i]] == -1) continue;
-    mp[a[i]] += cnt;
-    ans += mp[a[i]]/a[i];
-    cnt = mp[a[i]]%a[i];
-    mp[a[i]] = -1;
+  vec<tuple<int, int, int>> d;
+  for(int i = 0; i < p; i++) {
+    for(int j = i+1; j < p; j++) {
+      d.push_back({dis(x[i], y[i], x[j], y[j]), i, j});
+    }
   }
-  cout << ans;
+  sor(d);
+  DSU dsu = DSU(p);
+  vi ans;
+  fe(x, d) {
+    if(dsu.same_set(get<1>(x), get<2>(x))) continue;
+    dsu.unite(get<1>(x), get<2>(x)); 
+    ans.push_back(get<0>(x));
+  }
+  rsor(ans);
+  fe(x, ans) {
+    s--;
+    if(s == 0) {
+      cout << (sqrt(x));
+      return;
+    }
+  }
+  cout << 0;
 }
