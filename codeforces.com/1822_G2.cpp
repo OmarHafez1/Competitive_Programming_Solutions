@@ -37,7 +37,6 @@ using indexed_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_n
 template<typename T>
 using indexed_mset = tree<T,null_type,less_equal<T>,rb_tree_tag,tree_order_statistics_node_update>;
 
-
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
 const int INF = 1e9;
@@ -226,22 +225,22 @@ signed main() {
 
 
 vector<int> divs;
-
-vector<pair<int, int>> pfactor;
-
-void getdivisors(int ind, int num) {
-    if (ind == pfactor.size()) {
-        divs.push_back(num);
+void generate_divisors(const vector<pair<int, int>> &p, int ind, int val) {
+    if(ind == p.size()) {
+        int tmp = sqrtf(val);
+        if(tmp*tmp == val && val > 1) {
+            divs.push_back(val);
+        }
         return;
     }
-    for (int i = 0; i <= pfactor[ind].second; i++) {
-        getdivisors(ind + 1, num);
-        num *= pfactor[ind].first;
+    ull tmp = val;
+    for(int i = 0; i <= p[ind].second; i++) {
+        generate_divisors(p, ind+1, tmp);
+        tmp *= p[ind].first;
     }
 }
 
-
-ll get(map<int, int> &mp, int x) {
+ull get(map<int, int> &mp, int x) {
     return (mp.count(x)? mp[x] : 0);
 }
 
@@ -252,19 +251,28 @@ void calculate() {
     map<int, int> mp;
     for(int i = 0; i < n; i++) {
         cin >> a[i];
-        mp[a[i]]++; 
     }
     sort(a, a+n);
+    vector<int> w;
+    mp[a[0]]++;
+    w.push_back(a[0]);
+    for(int i = 1; i < n; i++) {
+        mp[a[i]]++; 
+        if(a[i] != a[i-1]) {
+            w.push_back(a[i]);
+        }
+    }
     ull ans = 0;
-    for (auto c : mp) ans += (ll)c.second * (c.second - 1) * (c.second - 2);
+    n = w.size();
+    for(int i = 0; i < n;i++) {
+        ull tmp = mp[w[i]];
+        ans += tmp*(tmp-1)*(tmp-2);
+    }
     for(int i = n-1; i > 1; i--) {
         divs = vector<int>();
-        pfactor = factorize(a[i]);
-        getdivisors(0, 1);
+        generate_divisors(factorize(w[i]), 0, 1);
         fe(x, divs) {
-            int tmp = sqrt(x);
-            if(tmp*tmp == x && x > 1)
-                ans += get(mp, a[i]/x)*get(mp, a[i]/((int)sqrt(x)));
+            ans += get(mp, w[i])*get(mp, w[i]/x)*get(mp, w[i]/((int)sqrt(x)));
         }
     }
     cout << ans;
