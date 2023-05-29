@@ -1,23 +1,43 @@
-/* 
-**
-**   author:  Omar_Hafez
-**   created: 19 May 2022 (Thursday)  7:37:22 PM
-**
-*/
+//============================================================================
+// Author      : Omar_Hafez
+// Created     : 15 May 2023 (Monday)  6:14:24 PM
+//============================================================================
  
+ /*   
+                ________
+               /        \
+              / /      \ \
+     ________/ /        \ \________
+    /        \            /        \ 
+   / /      \ \  ______  / /      \ \
+  / /        \ \________/ /        \ \ 
+  \            /        \            /
+   \  ______  / /      \ \  ______  /   
+    \________/ /        \ \________/
+    /        \            /        \
+   / /      \ \  ______  / /      \ \   
+  / /        \ \________/ /        \ \
+  \            /        \            /    
+   \  ______  / /      \ \  ______  /
+    \________/ /        \ \________/
+             \            /     
+              \  ______  / 
+               \________/ 
+
+*/
+
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
 using namespace chrono; 
 using namespace __gnu_pbds;
 
-typedef tree<int,null_type,less<int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_int;
-typedef tree<unsigned int,null_type,less<unsigned int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ui;
-typedef tree<long long,null_type,less<long long>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ll;
-typedef tree<unsigned long long,null_type,less<unsigned long long>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ull;
-typedef tree<double,null_type,less<double>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_db;
-typedef tree<long double,null_type,less<long double>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ld;
-typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_string;
+template<typename T>
+using indexed_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+template<typename T>
+using indexed_mset = tree<T,null_type,less_equal<T>,rb_tree_tag,tree_order_statistics_node_update>;
+
+#define int long long
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
@@ -84,14 +104,6 @@ using vpdp = vector<pdb>;
 #define ins insert
 #define ers erase
 
-#define iset_int indexed_set_int
-#define iset_ui indexed_set_ui
-#define iset_ll indexed_set_ll
-#define iset_ull indexed_set_ull
-#define iset_db indexed_set_db
-#define iset_ld indexed_set_ld
-#define iset_float indexed_set_float
-#define iset_string indexed_set_string
 #define key find_by_order
 #define order order_of_key
 
@@ -99,7 +111,8 @@ using vpdp = vector<pdb>;
 #define qu queue
 #define dqu deque
 #define pqu priority_queue
-#define pdqu(a) priority_queue<a,vector<a>,greater<a>>
+template <typename T>
+using pdqu = priority_queue<T, vector<T>, greater<T>>;
 
 // maps
 #define umap unordered_map
@@ -114,19 +127,7 @@ using vpdp = vector<pdb>;
 
 // some hacks
 #define endl '\n'
-#define getline(a) scanf("%[^\n]%*c", a);
 #define newl cout<<endl;
-
-#pragma GCC optimize("-Ofast")
-#pragma GCC target("sse,sse2,sse3,ssse3,sse4,sse4.2,popcnt,abm,mmx,avx2,tune=native")
-#pragma GCC optimize("-ffast-math")
-#pragma GCC optimize("-funroll-loops")
-#pragma GCC optimize("-funroll-all-loops,-fpeel-loops,-funswitch-loops")
-#define y0 this_fix_bug_with_y0_2022
-#define y1 this_fix_bug_with_y1_2022
-#define y2 this_fix_bug_with_y2_2022
-#define y3 this_fix_bug_with_y3_2022
-#define y4 this_fix_bug_with_y4_2022
 
 // some math
 #define point complex<ld>
@@ -172,78 +173,51 @@ void calculate();
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
-
-//auto it = std::find_if( sortList.begin(), sortList.end(), [&User](const std::pair<std::string, int>& element){ return element.first == User.name;} );
-/*
-bool isEqual(const std::pair<std::string, int>& element)
-{
-    return element.first ==  User.name;
-}
-it = std::find_if( sortList.begin(), sortList.end(), isEqual );
-*/
-
-
-vector<int> down;
-
-int main() { 
+signed main() { 
     ios_base::sync_with_stdio(false); cin.tie(NULL); 
     //freopen("input.txt", "r", stdin); 
     //freopen("output.txt", "w", stdout); 
 
-    int lst = 1;
-    int add = 4;
-    while(lst <= 1e6) {
-      down.push_back(lst);
-      lst += add;
-      add += 4;
-    }
-
     int t;
     cin >> t;
-    while(t--) {
+    for(int i = 1; i <= t; i++) {
+        cout << "Case " << i << ". ";
         calculate();
-        newl;
     }
 }
 
+int n;
+int h[20000], w[20000];
 
 void calculate() {
-    int n;
     cin >> n;
-    auto it = lower_bound(all(down), n);
-    if(*it == n) {
-      cout << "0 " << -1*distance(down.begin(), it);
-      return;
+    for(int i = 0; i < n; i++) {
+        cin >> h[i];
     }
-    it--;
-    int a = 0;
-    int cnt = distance(down.begin(), it)+1;
-    int x = 0, y = (-1*distance(down.begin(), it));
-    // 1    -1
-    int tmp = n-(*it);
-    while(tmp > 0) { 
-      if(a == 0) {
-        tmp--;
-        x++;
-      } else if(a == 1) {
-        x += min(cnt-1, tmp);
-        y += min(cnt-1, tmp);
-        tmp -= cnt-1;
-      } else if(a == 2) {
-        x -= min(cnt, tmp);
-        y += min(cnt, tmp);
-      } else if(a == 3) {
-        x -= min(cnt, tmp);
-        y -= min(cnt, tmp);
-      } else {
-        x += min(cnt, tmp);
-        y -= min(cnt, tmp);
-      }
-      if(a > 1) {
-        tmp -= cnt;
-      }
-      a++;
-      a %= 5;
+    for(int i = 0; i < n; i++) {
+        cin >> w[i];
     }
-    cout << x << ' ' << y;
+    vector<int> dp1(n), dp2(n);
+    int a1 = 0, a2 = 0;
+    for(int i = 0; i < n; i++) {
+        int mx = 0, mx2 = 0;
+        for(int j = 0; j < i; j++) {
+            if(h[i] > h[j]) {
+                mx = max(mx, dp1[j]);
+            }
+            if(h[i] < h[j]) {
+                mx2 = max(mx2, dp2[j]);
+            }
+        }
+        dp1[i] = mx + w[i];
+        dp2[i] = mx2 + w[i];
+        a1 = max(a1, dp1[i]);
+        a2 = max(a2, dp2[i]);
+    }
+
+    if(a1 >= a2) {
+        cout << "Increasing (" << a1 << "). Decreasing (" << a2 << ").\n";
+    } else {
+        cout << "Decreasing (" << a2 << "). Increasing (" << a1 << ").\n";
+    }
 }

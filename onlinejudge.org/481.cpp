@@ -1,8 +1,8 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 13 May 2023 (Saturday)  3:38:49 PM
 //============================================================================
- 
+
  /*   
                 ________
                /        \
@@ -12,7 +12,7 @@
    / /      \ \  ______  / /      \ \
   / /        \ \________/ /        \ \ 
   \            /        \            /
-   \  ______  / /      \ \  ______  /   
+   \  ______  / /      \ \  ______  /    
     \________/ /        \ \________/
     /        \            /        \
    / /      \ \  ______  / /      \ \   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -169,60 +168,45 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+vector<int> a;
+void go(vector<int> &p, int ind) {
+    if(p[ind] == -1) {
+        cout << a[ind] << endl;
+        return;
+    }
+    go(p, p[ind]);
+    cout << a[ind] << endl;
+}
 
 signed main() { 
     ios_base::sync_with_stdio(false); cin.tie(NULL); 
     //freopen("input.txt", "r", stdin); 
     //freopen("output.txt", "w", stdout); 
 
-    int t;
-    cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
-        calculate();
-        newl;
+    int n;
+    while(cin >> n) {
+        a.push_back(n);
     }
-}
-
-vector<vector<int>> a;
-
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
-
-void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
+    n = a.size();
+    vector<int> dp(n);
+    int k = 0;
+    vector<int> lst_ind(n);
+    vector<int> p(n);
+    int lnth = 0;
     for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
+        int ind = lower_bound(dp.begin(), dp.begin()+k, a[i])-dp.begin();
+        lst_ind[ind] = i;
+        p[i] = (ind? lst_ind[ind-1] : -1);
+        dp[ind] = a[i]; 
+        if(ind == k-1) lnth = i;
+        if(ind == k) {
+            k++;
+            lnth = i;
         }
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
-        }
-    }
-    cout << ans;
-
+    cout << k << endl << '-' << endl;
+    go(p, lnth);
 }

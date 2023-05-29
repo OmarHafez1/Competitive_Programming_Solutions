@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 25 May 2023 (Thursday)  5:42:41 PM
 //============================================================================
  
  /*   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -188,41 +187,38 @@ signed main() {
     }
 }
 
-vector<vector<int>> a;
 
-int n;
+vector<bool> vis;
+vector<int> res;
+int g[50001];
 
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
+int dfs(int u) {
+    if(vis[u]) return 0;
+    vis[u] = 1;
+    res[u] = dfs(g[u])+1;
+    vis[u] = 0;
+    return res[u];
+}
 
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
 
 void calculate() {
+    int n;
     cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
+    vis = vector<bool> (n+1);
+    res = vector<int> (n+1, -1);
+    int u, v;
     for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
-        }
+        cin >> u >> v;
+        g[u] = v;
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
+    int ans, mx = 0;
+    for(int i = 1; i <= n; i++) {
+        if(res[i] == -1)
+            dfs(i);
+        if(res[i] > mx) {
+            mx = res[i];
+            ans = i;
         }
     }
     cout << ans;
-
 }

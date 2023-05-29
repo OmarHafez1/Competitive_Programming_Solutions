@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 19 May 2023 (Friday)  6:14:32 PM
 //============================================================================
  
  /*   
@@ -129,6 +129,16 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
+#pragma GCC optimize("-Ofast")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,sse4.2,popcnt,abm,mmx,avx2,tune=native")
+#pragma GCC optimize("-ffast-math")
+#pragma GCC optimize("-funroll-loops")
+#pragma GCC optimize("-funroll-all-loops,-fpeel-loops,-funswitch-loops")
+#define y0 this_fix_bug_with_y0_2022
+#define y1 this_fix_bug_with_y1_2022
+#define y2 this_fix_bug_with_y2_2022
+#define y3 this_fix_bug_with_y3_2022
+#define y4 this_fix_bug_with_y4_2022
 
 // some math
 #define point complex<ld>
@@ -181,48 +191,75 @@ signed main() {
 
     int t;
     cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
+    while(t--) {
         calculate();
         newl;
     }
 }
 
-vector<vector<int>> a;
-
+int a[2001];
 int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
-
+    
+vector<int> mx(vector<int> &ans, vector<int> &tmp) {
+    for(int i = 0; i < n; i++) {
+        if(ans[i] > tmp[i]) return ans;
+        else if(tmp[i] > ans[i]) return tmp;
+    } 
+    return tmp;
+}
 void calculate() {
     cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
+    int ind;
     for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
+        cin >> a[i];
+        if(a[i] == n) {
+            ind = i;
         }
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
-        }
-    }
-    cout << ans;
+    vector<int> ans(n);
 
+    vector<int> tmp;
+    for(int i = 0; i < n; i++) {
+        tmp = vector<int>();
+        for(int j = i+1; j < n; j++) {
+            tmp.push_back(a[j]);
+        }
+        tmp.push_back(a[i]);
+        for(int j = 0; j < i; j++) {
+            tmp.push_back(a[j]);
+        }
+        ans = mx(tmp, ans);
+    }
+
+    for(int i = 0; i < ind; i++) {
+        tmp = vector<int>();
+        for(int j = ind; j < n; j++) {
+            tmp.push_back(a[j]);
+        }
+        for(int j = i; j < ind; j++) {
+            tmp.push_back(a[ind-1-(j-i)]);
+        }
+        for(int j = 0; j < i; j++) {
+            tmp.push_back(a[j]);
+        }
+        ans = mx(ans, tmp);
+    }
+
+    for(int i = ind; i < n; i++) {
+        tmp = vector<int>();
+        for(int j = i+1; j < n; j++) {
+            tmp.push_back(a[j]);
+        }
+        for(int j = ind; j <= i; j++) {
+            tmp.push_back(a[i-(j-ind)]);
+        }
+        for(int j = 0; j < ind; j++) {
+            tmp.push_back(a[j]);
+        }
+        ans = mx(ans, tmp);
+    }
+
+    fe(x, ans) {
+        cout << x << " ";
+    }
 }

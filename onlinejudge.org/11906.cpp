@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 25 May 2023 (Thursday)  6:33:39 PM
 //============================================================================
  
  /*   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -189,40 +188,68 @@ signed main() {
 }
 
 vector<vector<int>> a;
+int r, c, n, m, w;
 
-int n;
+bool ok(int i, int j) {
+    if(i >= 0 && i < r && j >= 0 && j < c && a[i][j] >= 0) return 1;
+  return 0;
+}
 
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
+void mk(int i, int j) {
+    int rs = 0;
+    set<pair<int, int>> st;
+    st.insert({i-n, j+m});
+    st.insert({i+n, j-m});
+    st.insert({i+n, j+m});
+    st.insert({i-n, j-m});
+    st.insert({i-m, j+n});
+    st.insert({i+m, j-n});
+    st.insert({i+m, j+n});
+    st.insert({i-m, j-n});
+    fe(x, st) {
+        rs += ok(x.first, x.second);
     }
-} 
+    a[i][j] = rs;
+}
+
+
+vector<vector<bool>> vis;
+int even = 0, odd = 0;
+
+void dfs(int i, int j) {
+    if(!ok(i, j)) return;
+    if(vis[i][j]) return;
+    vis[i][j] = 1;
+    if(a[i][j]%2 == 0) even++;
+    else if(a[i][j]&1) odd++;  
+    dfs(i-n, j+m);
+    dfs(i+n, j-m);
+    dfs(i-m, j+n);
+    dfs(i+m, j-n);
+    dfs(i+n, j+m);
+    dfs(i+m, j+n);
+    dfs(i-n, j-m);
+    dfs(i-m, j-n);
+}
 
 void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
-        }
+    cin >> r >> c >> n >> m >> w;
+    even = 0;
+    odd = 0;
+    a = vector<vector<int>>(r, vector<int>(c, 0));
+    vis = vector<vector<bool>>(r, vector<bool>(c, 0));
+    int x, y;
+    for(int i = 0; i < w; i++) {
+        cin >> x >> y;
+        a[x][y] = -1;
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
+    for(int i = 0; i < r; i++) {
+        for(int j = 0; j < c; j++) {
+            if(a[i][j] != -1) {
+                mk(i, j);
             }
         }
     }
-    cout << ans;
-
+    dfs(0, 0);
+    cout << even << " " << odd;
 }

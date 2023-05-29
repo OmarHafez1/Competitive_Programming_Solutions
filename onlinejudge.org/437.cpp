@@ -1,8 +1,8 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 13 May 2023 (Saturday)  3:16:09 PM
 //============================================================================
- 
+
  /*   
                 ________
                /        \
@@ -12,7 +12,7 @@
    / /      \ \  ______  / /      \ \
   / /        \ \________/ /        \ \ 
   \            /        \            /
-   \  ______  / /      \ \  ______  /   
+   \  ______  / /      \ \  ______  /    
     \________/ /        \ \________/
     /        \            /        \
    / /      \ \  ______  / /      \ \   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -169,8 +168,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
@@ -179,50 +176,46 @@ signed main() {
     //freopen("input.txt", "r", stdin); 
     //freopen("output.txt", "w", stdout); 
 
-    int t;
-    cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
-        calculate();
-        newl;
-    }
-}
-
-vector<vector<int>> a;
-
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
-
-void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
+    int n;
+    int t = 1;
+    while(cin >> n) {
+        if(n == 0) return 0;
+        map<pair<int, int>, int> mp;
+        set<pair<int, int>> s;
+        int a[3];
+        for(int i = 0; i < n; i++) {
+            cin >> a[0] >> a[1] >> a[2];
+            sort(a, a+3);
+            s.insert({a[0], a[1]});
+            mp[{a[0], a[1]}] = max(mp[{a[0], a[1]}], a[2]);
+            s.insert({a[0], a[2]});
+            mp[{a[0], a[2]}] = max(mp[{a[0], a[2]}], a[1]);
+            s.insert({a[1], a[2]});
+            mp[{a[1], a[2]}] = max(mp[{a[1], a[2]}], a[0]);
         }
-    }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
+        n = s.size();
+        pair<int, int> w[n];
+        int ind = 0;
+        fe(x, s) {
+            w[ind] = x;  
+            ind++;
+        }
+        int dp[n];
+        for(int i = 0; i < n; i++) {
+            dp[i] = mp[w[i]];
+        }
+        int ans = dp[0];
+        for(int i = 1; i < n; i++) {
+            int x = 0;
+            for(int j = i-1; j >= 0; j--) {
+                if(w[i].first > w[j].first && w[i].second > w[j].second) {
+                    x = max(x, dp[j]);
+                }
             }
+            dp[i] += x;
+            ans = max(ans, dp[i]);
         }
+        cout << "Case " << t << ": maximum height = " << ans << endl;
+        t++;
     }
-    cout << ans;
-
 }

@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 21 May 2023 (Sunday)  9:45:04 PM
 //============================================================================
  
  /*   
@@ -181,48 +181,30 @@ signed main() {
 
     int t;
     cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
+    while(t--) {
         calculate();
         newl;
     }
 }
 
-vector<vector<int>> a;
-
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
+int a[101];
 
 void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
+    int s, n;
+    cin >> s >> n;
+    int mx = 20000;
+    vector<int> dp(mx+1, INF);
+    dp[0] = 0;
     for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
+        cin >> a[i];
+        for(int j = mx; j >= a[i]; j--) {
+            dp[j] = min(dp[j], dp[j-a[i]]+1);
         }
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
+    for(int i = s; i < mx; i++) {
+        if(dp[i] != INF) {
+            cout << i << " " << dp[i];
+            return;
         }
     }
-    cout << ans;
-
 }

@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 21 May 2023 (Sunday)  9:00:09 PM
 //============================================================================
  
  /*   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -181,48 +180,34 @@ signed main() {
 
     int t;
     cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
+    while(t--) {
         calculate();
         newl;
     }
 }
 
-vector<vector<int>> a;
+int m, k;
+int a[40][2];
 
-int n;
+int dp[1000][1000];
 
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
+int solve(int ind, int sx, int sy) {
+    int tmp = sx*sx+sy*sy;
+    if(tmp == k) {
+        return 0;
+    } else if(tmp > k) return INF;
+    if(ind < 0) return INF;
+    if(dp[sx][sy] != -1) return dp[sx][sy];
+    return dp[sx][sy] = min(solve(ind-1, sx, sy), solve(ind, sx+a[ind][0], sy+a[ind][1])+1);
+}
 
 void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
-        }
+    cin >> m >> k;
+    memset(dp, -1, sizeof(dp));
+    k *= k;
+    for(int i = 0; i < m; i++) {
+        cin >> a[i][0] >> a[i][1];
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
-        }
-    }
-    cout << ans;
-
+    int tmp = solve(m-1, 0, 0);
+    cout << (tmp == INF? "not possible" : to_string(tmp));
 }

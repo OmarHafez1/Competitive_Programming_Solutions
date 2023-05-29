@@ -1,8 +1,8 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 18 May 2023 (Thursday)  10:32:16 PM
 //============================================================================
- 
+
  /*   
                 ________
                /        \
@@ -12,7 +12,7 @@
    / /      \ \  ______  / /      \ \
   / /        \ \________/ /        \ \ 
   \            /        \            /
-   \  ______  / /      \ \  ______  /   
+   \  ______  / /      \ \  ______  /    
     \________/ /        \ \________/
     /        \            /        \
    / /      \ \  ______  / /      \ \   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -169,60 +168,46 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
-signed main() { 
-    ios_base::sync_with_stdio(false); cin.tie(NULL); 
-    //freopen("input.txt", "r", stdin); 
-    //freopen("output.txt", "w", stdout); 
+int m, n;
+int p[101], a[101];
+vector<vector<int>> dp;
 
-    int t;
-    cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
-        calculate();
-        newl;
+bool crid = 0;
+
+int solve(int ind, int sz) {
+    if(ind < 0 || sz > m) return -INF;
+    if(ind == 0) {
+        if(crid) {
+            if(sz <= 2000) return -INF;
+        } 
+        return 0;
     }
+    if(dp[sz][ind] != -1) return dp[sz][ind];
+    return dp[sz][ind] = max(solve(ind-1, sz), solve(ind-1, sz+p[ind]) + a[ind]);
 }
 
-vector<vector<int>> a;
+signed main() { 
+    ios_base::sync_with_stdio(false); cin.tie(NULL); 
 
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
-
-void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
+    while(cin >> m) {
+        crid = 0;
+        cin >> n;
+        m += (m > 2000) * 200;
+        dp = vector<vector<int>> (m+1, vector<int>(n+1, -1));
+        for(int i = 1; i <= n; i++) {
+            cin >> p[i] >> a[i];
         }
-    }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
+        int ans = solve(n, 0);
+        crid = (m <= 2000 && m+200 > 2000);
+        if(crid) {
+            m += 200;
+            dp = vector<vector<int>> (m+1, vector<int>(n+1, -1));
+            ans = max(ans, solve(n, 0));
         }
+        cout << max(ans, 0ll) << endl;
     }
-    cout << ans;
-
+    
 }

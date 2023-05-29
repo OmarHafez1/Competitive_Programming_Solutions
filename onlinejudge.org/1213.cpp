@@ -1,8 +1,8 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 15 May 2023 (Monday)  11:41:25 PM
 //============================================================================
- 
+
  /*   
                 ________
                /        \
@@ -12,7 +12,7 @@
    / /      \ \  ______  / /      \ \
   / /        \ \________/ /        \ \ 
   \            /        \            /
-   \  ______  / /      \ \  ______  /   
+   \  ______  / /      \ \  ______  /    
     \________/ /        \ \________/
     /        \            /        \
    / /      \ \  ______  / /      \ \   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -169,60 +168,47 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+vi get_primes(ull n) {
+    vector<int> ret;
+    vb pp(n+1, 1);
+    pp[0] = 0;
+    pp[1] = 0;
+    for (ull i = 2; i <= n; i++) {
+    if (pp[i]) {
+        ret.push_back(i);
+        for (ull j = i * i; j <= n; j += i)
+            pp[j] = 0;
+    }
+    }
+    return ret;
+}
+
+vector<int> primes;
+
+vector<vector<vector<int>>> dp;
+
+int solve(int ind, int n, int k) {
+    if(n == 0 && k == 0) return 1;
+    if(n < 0 || k < 0 || ind >= primes.size() || primes[ind] > n) return 0;
+    int &x = dp[ind][n][k];
+    if(x != -1) return x;
+    return x =solve(ind+1, n-primes[ind], k-1) + solve(ind+1, n, k);
+} 
 
 signed main() { 
     ios_base::sync_with_stdio(false); cin.tie(NULL); 
     //freopen("input.txt", "r", stdin); 
     //freopen("output.txt", "w", stdout); 
 
-    int t;
-    cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
-        calculate();
-        newl;
+    primes = get_primes(1120);
+    int n, k;
+    while(cin >> n) {
+        cin >> k;
+        if(n == 0 && k == 0) return 0;
+        dp = vector<vector<vector<int>>> (primes.size()+1, vector<vector<int>> (n+1, vector<int>(k+1, -1)));
+        cout << solve(0, n, k) << endl;
     }
-}
-
-vector<vector<int>> a;
-
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
-
-void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
-        }
-    }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
-        }
-    }
-    cout << ans;
-
 }

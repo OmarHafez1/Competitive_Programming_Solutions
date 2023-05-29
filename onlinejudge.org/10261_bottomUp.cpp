@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 17 May 2023 (Wednesday)  7:31:14 PM
 //============================================================================
  
  /*   
@@ -27,17 +27,7 @@
 */
 
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
-using namespace chrono; 
-using namespace __gnu_pbds;
-
-template<typename T>
-using indexed_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
-template<typename T>
-using indexed_mset = tree<T,null_type,less_equal<T>,rb_tree_tag,tree_order_statistics_node_update>;
-
-#define int long long
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
@@ -129,7 +119,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -181,48 +170,56 @@ signed main() {
 
     int t;
     cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
+    while(t--) {
         calculate();
-        newl;
+        if(t)
+            newl;
     }
 }
 
-vector<vector<int>> a;
-
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
+void print(vector<vector<int>> &dp, vector<int> &a, int ind, int val) {
+    if(ind < 0 || val < 0 || dp[ind][val] == 0) return;
+    int vv = val;
+    if(dp[ind][val] == 1) vv -= a[ind];
+    print(dp, a, ind-1, vv);
+    cout << (dp[ind][val] == 1? "starboard" : "port") << endl;
+}
 
 void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
+    int n, m, f;
+    cin >> m; m *= 100;
+    vector<int> a;
+    while(cin >> f) {
+        if(f == 0) {
+            break;
         }
+        a.push_back(f);
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
+    if(a.size() == 0 || a[0] > m) {
+        cout << 0 << endl;
+        return;
+    }
+    n = a.size();
+    vector<vector<int>> dp(n+1, vector<int>(m+1, 0));
+    dp[0][0] = 2;
+    int sum = a[0];
+    int ind = 0, val = 0;
+    for(int i = 1; i < n; i++) {
+        for(int j = 0; j <= m; j++) {
+            if((dp[i-1][j]) <= 0) continue;
+            if(j+a[i] <= m) {
+                dp[i][j+a[i]] = 1;
+                ind = i;
+                val = j+a[i];
+            } 
+            if((sum-j)+a[i] <= m) {
+                dp[i][j] = 2;
+                ind = i;
+                val = j;
             }
         }
+        sum += a[i];
     }
-    cout << ans;
-
+    cout << ind+1 << endl;
+    print(dp, a, ind, val);
 }

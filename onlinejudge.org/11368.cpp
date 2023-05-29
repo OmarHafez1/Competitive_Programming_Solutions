@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 14 May 2023 (Sunday)  1:02:39 AM
 //============================================================================
  
  /*   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -181,48 +180,32 @@ signed main() {
 
     int t;
     cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
+    while(t--) {
         calculate();
         newl;
     }
 }
 
-vector<vector<int>> a;
-
 int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
 
 void calculate() {
     cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
+    vector<pair<int, int>> a(n);
     for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
+        cin >> a[i].first >> a[i].second;
+    }
+    sort(a.begin(), a.end(), [](pair<int, int> x, pair<int, int> y) {
+        if(x.first == y.first) return x.second > y.second;
+        return x.first < y.first;
+    });
+    deque<int> q;
+    for(int i = 0; i < n; i++) {
+        int pos = lower_bound(q.begin(), q.end(), a[i].second)-q.begin();
+        if(pos == 0) {
+            q.push_front(a[i].second);
+        } else {
+            q[pos-1] = a[i].second;
         }
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
-        }
-    }
-    cout << ans;
-
+    cout << q.size();
 }

@@ -1,8 +1,8 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 26 May 2023 (Friday)  6:26:16 AM
 //============================================================================
- 
+
  /*   
                 ________
                /        \
@@ -12,7 +12,7 @@
    / /      \ \  ______  / /      \ \
   / /        \ \________/ /        \ \ 
   \            /        \            /
-   \  ______  / /      \ \  ______  /   
+   \  ______  / /      \ \  ______  /    
     \________/ /        \ \________/
     /        \            /        \
    / /      \ \  ______  / /      \ \   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -169,60 +168,78 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+int n, m;
+vector<vector<int>> a;
+
+void go(int i, int j, int nw, int lst) {
+    if(i < 0 || i > n+1 || j < 0 || j > m+1 || a[i][j] != lst) return;
+    a[i][j] = nw;
+    for(int y = -1; y <= 1; y++)
+        for(int x = -1; x <= 1; x++)
+            go(i+x, j+y, nw, lst);
+}
+
+int cnt;
+
+void dfs(int i, int j) {
+    if(i < 0 || i > n+1 || j < 0 || j > m+1) return;
+    if(a[i][j] == 0) {
+        go(i, j, INF, 0);
+        cnt++;
+        return;
+    }
+    if(a[i][j] != 1) return;
+    a[i][j] = INF;
+    for(int y = -1; y <= 1; y++)
+        for(int x = -1; x <= 1; x++)
+            dfs(i+x, j+y);
+}
 
 signed main() { 
     ios_base::sync_with_stdio(false); cin.tie(NULL); 
     //freopen("input.txt", "r", stdin); 
     //freopen("output.txt", "w", stdout); 
 
-    int t;
-    cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
-        calculate();
-        newl;
-    }
-}
-
-vector<vector<int>> a;
-
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
-
-void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
+    int t = 1;
+    while(1) {
+        cin >> n >> m; 
+        if(n == 0 && m == 0) return 0;
+        cout << "Case " << t++ << ": ";
+        a = vector<vector<int>>(n+10, vector<int>(m*4+10));
+        string s;
+        for(int i = 1; i <= n; i++) {
+            cin >> s;
+            s = "@"+s;
+            int ind = 1;
+            for(int j = 1; j <= m; j++) {
+                int x = s[j] >= 'a'? s[j]-'a'+10 : s[j]-'0';
+                for(int k = 3; ~k; k--) {
+                    a[i][ind++] = ((x & (1 << k))? 1 : 0); 
+                }
+            }   
         }
-    }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
+        m *= 4;
+        go(0, 0, INF, 0);
+        vector<int> ans;
+        for(int i = 1; i <= n; i++) {
+            for(int j = 1; j <= m; j++) {
+                if(a[i][j] == 1) {
+                    cnt = 0;
+                    dfs(i, j);
+                    ans.push_back(cnt);
+                }
             }
         }
+        string res = "";
+        fe(x, ans) {
+            res += "WAKJSD"[x];
+        }
+        sor(res);
+        cout << res;
+        newl;
     }
-    cout << ans;
-
+    
 }

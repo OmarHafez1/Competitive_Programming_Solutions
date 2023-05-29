@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 21 May 2023 (Sunday)  9:00:09 PM
 //============================================================================
  
  /*   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -181,48 +180,29 @@ signed main() {
 
     int t;
     cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
+    while(t--) {
         calculate();
         newl;
     }
 }
 
-vector<vector<int>> a;
-
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
+int a[40][2];
 
 void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
-        }
-    }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
+    int m, k;
+    cin >> m >> k;
+    vector<vector<int>> dp(1000, vector<int> (1000, INF));    
+    dp[0][0] = 1;
+    int ans = INF;
+    for(int i = 0; i < m; i++) {
+        cin >> a[i][0] >> a[i][1];
+        for(int x = a[i][0]; x < 1000; x++) {
+            for(int y = a[i][1]; y < 1000; y++) {
+                dp[x][y] = min(dp[x-a[i][0]][y-a[i][1]]+1, dp[x][y]);
+                if(x*x + y*y == k*k) ans = min(ans, dp[x][y]);
             }
         }
     }
-    cout << ans;
+    cout << (ans == INF? "not possible" : to_string(ans-1));
 
 }

@@ -1,8 +1,8 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 27 May 2023 (Saturday)  10:37:10 PM
 //============================================================================
- 
+
  /*   
                 ________
                /        \
@@ -12,7 +12,7 @@
    / /      \ \  ______  / /      \ \
   / /        \ \________/ /        \ \ 
   \            /        \            /
-   \  ______  / /      \ \  ______  /   
+   \  ______  / /      \ \  ______  /    
     \________/ /        \ \________/
     /        \            /        \
    / /      \ \  ______  / /      \ \   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -169,60 +168,44 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+int ans;
+
+void dfs(int u, vector<vector<int>> &adj, vector<int> &color, int c) {
+    if(ans != -1) return;
+    if(color[u] != -1) {
+        if(color[u] != c) ans = 0;
+        return;
+    }
+    color[u] = c;
+    fe(x, adj[u]) {
+        dfs(x, adj, color, 1-c);
+    }
+}
 
 signed main() { 
     ios_base::sync_with_stdio(false); cin.tie(NULL); 
     //freopen("input.txt", "r", stdin); 
     //freopen("output.txt", "w", stdout); 
 
-    int t;
-    cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
-        calculate();
-        newl;
-    }
-}
-
-vector<vector<int>> a;
-
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
-
-void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
+    int n, m;
+    while(1) {
+        ans = -1;
+        cin >> n;
+        if(n == 0) return 0;
+        cin >> m;
+        vector<vector<int>> adj(n+1);
+        int u, v;
+        for(int i = 0; i < m; i++) {
+            cin >> u >> v;
+            adj[u].push_back(v);
+            adj[v].push_back(u);
         }
+        vector<int> color(n+1, -1);
+        dfs(0, adj, color, 0);
+        cout << (ans? "BICOLORABLE.\n" : "NOT BICOLORABLE.\n");
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
-        }
-    }
-    cout << ans;
-
+    
 }

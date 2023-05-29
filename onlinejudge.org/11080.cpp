@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 28 May 2023 (Sunday)  5:58:55 AM
 //============================================================================
  
  /*   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -181,48 +180,56 @@ signed main() {
 
     int t;
     cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
+    while(t--) {
         calculate();
         newl;
     }
 }
 
-vector<vector<int>> a;
+int n, m;
+vector<vector<int>> adj;
+vector<int> colors;
 
-int n;
+bool ok;
 
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
+void go(int u, int c, int &cnt1, int &cnt2) {
+    if(!ok) return;
+    if(colors[u] == c) return;
+    if(colors[u] != -1) {
+        ok = 0;
+        return;
     }
-} 
+    colors[u] = c;
+    if(c == 1) cnt1++;
+    else cnt2++;
+    for(int x : adj[u]) {
+        go(x, 1-c, cnt1, cnt2);
+    }
+}
 
 void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
-        }
+    cin >> n >> m;
+    ok = 1;
+    adj = vector<vector<int>> (n+1);
+    colors = vector<int> (n+1, -1);
+    int u, v;
+    for(int i = 0; i < m; i++) {
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
     int ans = 0;
     for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
+        if(colors[i] == -1) {
+            int cnt1 = 0, cnt2 = 0;
+            go(i, 0, cnt1, cnt2);
+            if(cnt1 == 0 || cnt2 == 0) ans++;
+            else ans += min(cnt1, cnt2);
         }
     }
+    if(!ok) {
+        cout << -1;
+        return;
+    }
     cout << ans;
-
 }

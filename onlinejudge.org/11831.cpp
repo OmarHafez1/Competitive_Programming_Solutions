@@ -1,8 +1,8 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 25 May 2023 (Thursday)  12:11:11 PM
 //============================================================================
- 
+
  /*   
                 ________
                /        \
@@ -12,7 +12,7 @@
    / /      \ \  ______  / /      \ \
   / /        \ \________/ /        \ \ 
   \            /        \            /
-   \  ______  / /      \ \  ______  /   
+   \  ______  / /      \ \  ______  /    
     \________/ /        \ \________/
     /        \            /        \
    / /      \ \  ______  / /      \ \   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -169,60 +168,67 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+int dx[] = {1,  0, -1, 0};
+int dy[] = {0, -1,  0, 1};
+
+int n, m, k;
+int a[101][101];
+
+bool ok(int i, int j) {
+    return (i >= 0 && i < m && j >= 0 && j < n && a[j][i] > 0);
+}
 
 signed main() { 
     ios_base::sync_with_stdio(false); cin.tie(NULL); 
     //freopen("input.txt", "r", stdin); 
     //freopen("output.txt", "w", stdout); 
 
-    int t;
-    cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
-        calculate();
-        newl;
-    }
-}
-
-vector<vector<int>> a;
-
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
-
-void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
-        }
-    }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
+    while(1) {
+        cin >> n >> m >> k;
+        if(n == 0 && m == 0 && k == 0) return 0;
+        int x, y;
+        string s;
+        int ind = 0;
+        for(int i = 0; i < n; i++) {
+            cin >> s;
+            for(int j = 0; j < m; j++) {
+                if(s[j] == '.') a[i][j] = 1;
+                else if(s[j] == '#') a[i][j] = 0;
+                else if(s[j] == '*') a[i][j] = 2;
+                else {
+                    a[i][j] = 1;
+                    x = j;
+                    y = i;
+                    if(s[j] == 'N') ind = 1;
+                    else if(s[j] == 'S') ind = 3;
+                    else if(s[j] == 'L') ind = 0;
+                    else ind = 2; 
+                }
             }
         }
+        string go;
+        cin >> go;
+        int ans = 0;
+        for(int i = 0; i < k; i++) {
+            if(go[i] == 'D') ind--;
+            else if(go[i] == 'E') ind++;
+            else {
+                if(ok(x+dx[ind], y+dy[ind])) {
+                    x += dx[ind];
+                    y += dy[ind];
+                    if(a[y][x] == 2) {
+                        a[y][x] = 1;
+                        ans++;
+                    }
+                }
+            }
+            ind += 4;
+            ind %= 4;
+        }
+        cout << ans << endl;
     }
-    cout << ans;
-
+    
 }

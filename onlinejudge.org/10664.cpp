@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 18 May 2023 (Thursday)  10:07:49 PM
 //============================================================================
  
  /*   
@@ -181,48 +181,53 @@ signed main() {
 
     int t;
     cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
+    cin.ignore();
+    while(t--) {
         calculate();
         newl;
     }
 }
 
-vector<vector<int>> a;
-
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
+vs split(const string& str, const string& delim) {
+  vs tokens;
+  size_t prev = 0, pos = 0;
+  do {
+      pos = str.find(delim, prev);
+      if (pos == string::npos) pos = str.length();
+      string token = str.substr(prev, pos-prev);
+      if (!token.empty()) tokens.push_back(token);
+      prev = pos + delim.length();
+  } while (pos < str.length() && prev < str.length());
+  return tokens;
+}
 
 void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
     string s;
+    getline(cin, s);
+    vs tmp = split(s, " ");
+    int n = tmp.size();
+    int a[tmp.size()+1];
+    int sum = 0;
     for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
-        }
+        a[i+1] = stoi(tmp[i]);
+        sum += a[i+1];
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
+    if(sum&1) {
+        cout << "NO";
+        return;
+    }
+    sum /= 2;
+    vector<vector<int>> dp(sum+1, vector<int>(n+1, 0));
+    int mx = 0;
+    dp[0][0] = 0;
+    for(int i = 1; i <= sum; i++) {
+        for(int j = 1; j <= n; j++) {
+            dp[i][j] += dp[i][j-1];
+            if(i >= a[j]) {
+                dp[i][j] = max(dp[i][j], dp[i-a[j]][j-1]+a[j]);
             }
+            mx = max(mx, dp[i][j]);
         }
     }
-    cout << ans;
-
+    cout << (mx == sum? "YES" : "NO");
 }

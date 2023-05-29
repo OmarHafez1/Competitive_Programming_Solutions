@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 19 May 2023 (Friday)  5:48:26 PM
 //============================================================================
  
  /*   
@@ -129,6 +129,16 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
+#pragma GCC optimize("-Ofast")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,sse4.2,popcnt,abm,mmx,avx2,tune=native")
+#pragma GCC optimize("-ffast-math")
+#pragma GCC optimize("-funroll-loops")
+#pragma GCC optimize("-funroll-all-loops,-fpeel-loops,-funswitch-loops")
+#define y0 this_fix_bug_with_y0_2022
+#define y1 this_fix_bug_with_y1_2022
+#define y2 this_fix_bug_with_y2_2022
+#define y3 this_fix_bug_with_y3_2022
+#define y4 this_fix_bug_with_y4_2022
 
 // some math
 #define point complex<ld>
@@ -181,48 +191,34 @@ signed main() {
 
     int t;
     cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
+    while(t--) {
         calculate();
         newl;
     }
 }
 
-vector<vector<int>> a;
 
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
+int a[100001], b[100001], ta[100001];
 
 void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
+    int n, k;
+    cin >> n >> k;
     for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
-        }
+        cin >> a[i];
+        ta[i] = a[i];
     }
-    int ans = 0;
     for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
-        }
+        cin >> b[i];
     }
-    cout << ans;
+    sort(ta, ta+n);
+    sort(b, b+n);
+    map<int, stack<int>> mp;
+    for(int i = 0; i < n; i++) {
+        mp[ta[i]].push(b[i]);
+    } 
+    for(int i = 0; i < n; i++) {
+        cout << mp[a[i]].top() << " ";
+        mp[a[i]].pop();
+    }
 
 }

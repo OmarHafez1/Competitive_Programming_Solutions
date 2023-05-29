@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 17 May 2023 (Wednesday)  6:28:15 PM
 //============================================================================
  
  /*   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -181,48 +180,55 @@ signed main() {
 
     int t;
     cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
+    while(t--) {
         calculate();
-        newl;
+        if(t)
+            newl;
     }
 }
 
-vector<vector<int>> a;
+int n, m;
+vector<int> a;
 
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
+vector<vector<bool>> ans;
+vector<vector<int>> dp;
+int solve(int ind, int left, int right) {
+    if(ind == n) return 0;
+    int &w = dp[ind][left];
+    if(w != -1) return w;
+    int x = 0, y = 0;
+    if(left+a[ind] <= m) {
+        x = solve(ind+1, left+a[ind], right)+1;
     }
-} 
+    if(right+a[ind] <= m) {
+        y = solve(ind+1, left, right+a[ind])+1;
+    }
+    if(x > y) {
+        ans[ind][left] = 1;
+    }
+    return w = max(x, y);
+}
+
 
 void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
+    a = vector<int>();
+    cin >> m;
+    m *= 100;
+    int f;
+    while(cin >> f) {
+        if(f == 0) {
+            break;
         }
+        a.push_back(f);
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
-        }
+    n = a.size();
+    ans = vector<vector<bool>> (n+1, vector<bool>(m+10, 0));
+    dp = vector<vector<int>> (n+1, vector<int>(m+10, -1));
+    int ss = solve(0, 0, 0);
+    cout << ss << endl;
+    int k = 0;
+    for(int i = 0; i < ss; i++) {
+        cout << (ans[i][k]? "port" : "starboard") << endl;
+        if(ans[i][k]) k += a[i];
     }
-    cout << ans;
-
 }

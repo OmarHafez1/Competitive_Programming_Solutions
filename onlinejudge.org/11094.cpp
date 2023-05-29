@@ -1,26 +1,47 @@
-/* 
-**
-**   author:  Omar_Hafez
-**   created: 27 February 2022 (Sunday)  6:20:22 PM
-**
+//============================================================================
+// Author      : Omar_Hafez
+// Created     : 26 May 2023 (Friday)  7:10:53 AM
+//============================================================================
+
+ /*   
+                ________
+               /        \
+              / /      \ \
+     ________/ /        \ \________
+    /        \            /        \ 
+   / /      \ \  ______  / /      \ \
+  / /        \ \________/ /        \ \ 
+  \            /        \            /
+   \  ______  / /      \ \  ______  /    
+    \________/ /        \ \________/
+    /        \            /        \
+   / /      \ \  ______  / /      \ \   
+  / /        \ \________/ /        \ \
+  \            /        \            /    
+   \  ______  / /      \ \  ______  /
+    \________/ /        \ \________/
+             \            /     
+              \  ______  / 
+               \________/ 
+
 */
- 
+
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
 using namespace chrono; 
 using namespace __gnu_pbds;
 
-typedef tree<int,null_type,less<int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_int;
-typedef tree<unsigned int,null_type,less<unsigned int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ui;
-typedef tree<long long,null_type,less<long long>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ll;
-typedef tree<unsigned long long,null_type,less<unsigned long long>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ull;
-typedef tree<double,null_type,less<double>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_db;
-typedef tree<long double,null_type,less<long double>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ld;
-typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_string;
+template<typename T>
+using indexed_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+template<typename T>
+using indexed_mset = tree<T,null_type,less_equal<T>,rb_tree_tag,tree_order_statistics_node_update>;
+
+#define int long long
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -56,6 +77,8 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
+#define fir first
+#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -81,20 +104,15 @@ using vpdp = vector<pdb>;
 #define ins insert
 #define ers erase
 
-#define iset_int indexed_set_int
-#define iset_ui indexed_set_ui
-#define iset_ll indexed_set_ll
-#define iset_ull indexed_set_ull
-#define iset_db indexed_set_db
-#define iset_ld indexed_set_ld
-#define iset_float indexed_set_float
-#define iset_string indexed_set_string
+#define key find_by_order
+#define order order_of_key
 
 // queue
 #define qu queue
 #define dqu deque
 #define pqu priority_queue
-#define pdqu(a) priority_queue<a,vector<a>,greater<a>>
+template <typename T>
+using pdqu = priority_queue<T, vector<T>, greater<T>>;
 
 // maps
 #define umap unordered_map
@@ -109,7 +127,6 @@ using vpdp = vector<pdb>;
 
 // some hacks
 #define endl '\n'
-#define getline(a) scanf("%[^\n]%*c", a);
 #define newl cout<<endl;
 
 #pragma GCC optimize("-Ofast")
@@ -117,21 +134,44 @@ using vpdp = vector<pdb>;
 #pragma GCC optimize("-ffast-math")
 #pragma GCC optimize("-funroll-loops")
 #pragma GCC optimize("-funroll-all-loops,-fpeel-loops,-funswitch-loops")
-#define y1 this_fix_bug_with_this_name_2022
+#define y0 this_fix_bug_with_y0_2022
+#define y1 this_fix_bug_with_y1_2022
+#define y2 this_fix_bug_with_y2_2022
+#define y3 this_fix_bug_with_y3_2022
+#define y4 this_fix_bug_with_y4_2022
 
 // some math
-#define sinDegrees(x) sin((x) * PI / 180.0)
-#define cosDegrees(x) cos((x) * PI / 180.0)
-#define tanDegrees(x) tan((x) * PI / 180.0)
-#define asinDegrees(x) asin(x)* 180.0 / PI
-#define acosDegrees(x) acos(x)* 180.0 / PI
-#define atanDegrees(x) atan(x)* 180.0 / PI
+#define point complex<ld>
+#define degree(x) (x) * 180.0 / PI
+#define radian(x) (x) * PI / 180.0
+#define sinDegrees(x) sin(radian(x))
+#define cosDegrees(x) cos(radian(x))
+#define tanDegrees(x) tan(radian(x))
+#define asinDegrees(x) dgeree(asin(x))
+#define acosDegrees(x) degree(acos(x))
+#define atanDegrees(x) degree(atan(x))
+#define EPS 1e-8
+#define is_same(a, b) (fabs(a-b) <= EPS)
+
+// some complex
+#define point complex<ld>
+#define c_angle(a) (atan2((a).imag(), (a).real()))
+#define c_vec(a,b) (b)-(a)
+#define c_dp(a,b) (conj(a)*(b)).real() // a*b cos(T), if zero -> prep
+#define c_cp(a,b) (conj(a)*(b)).imag()  // a*b sin(T), if zero -> parllel
+#define c_same(p1,p2) (c_dp(vec(p1,p2),vec(p1,p2)) < EPS)
+#define c_length(a) (hypot((a).imag(), (a).real()))
+#define c_distance(a, b, c) fabs(c_cp(a-b, a-c)/c_length(a-b))
+#define c_normalize(a) (a)/c_length(a)
+#define c_rotateO(p,ang) ((p)*exp(point(0,ang)))
+#define c_rotateA(p,ang,about) (c_rotateO(vec(about,p),ang)+about)
+#define c_reflectO(v,m) (conj((v)/(m))*(m))
 
 // bits
-#define cnt_1s(b) __builtin_popcount(b)
-#define begin_0s(b) __builtin_clz(b) 
-#define end_0s(b) __builtin_ctz(b) 
-#define ffno(b) find_first_not_of(b) 
+#define cnt_1s(b) __builtin_popcountll(b)
+#define begin_0s(b) __builtin_clzll(b) 
+#define end_0s(b) __builtin_ctzll(b) 
+#define ffno(b) find_first_not_ofll(b) 
 
 // permutation 
 #define n_perm next_permutation
@@ -141,56 +181,48 @@ using vpdp = vector<pdb>;
 
 // fflush(stdout);
 // cout << fixed << setprecision(10);
-  
+
 int n, m;
-vec<vb> a;
-
-vpi moves = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-
-int clr(int x, int y) {
-  if(x < 0 || x >= n) return 0;
-  if(y < 0) y = m-1;
-  if(y >= m) y = 0;
-  if(!a[x][y]) return 0; 
-  a[x][y] = 0;
-  int res = 1;
-  fe(w, moves) {
-    res += clr(x+w.first, y+w.second);
-  }
-  return res;
-}
-
-char ch;
-
-int main() { 
-  ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
-  //freopen("output.txt", "w", stdout); 
-  
-  while(cin >> n >> m) {
-    a = vec<vb>(n, vb(m, -1));
-    vs str(n);
-    for(int i = 0; i < n; i++) {
-      cin >> str[i];
+vector<string> a;
+char tar;
+int dfs(int i, int j) {
+    if(i < 0 || i >= n) return 0;
+    if(j == -1) j = m-1;
+    if(j == m) j = 0;
+    if(a[i][j] != tar) return 0;
+    a[i][j] = tar-1;
+    int res = 1;
+    for(int x = -1; x <= 1; x++) {
+        for(int y = -1; y <= 1; y++) {
+            if(x == 0 || y == 0)
+                res += dfs(i+x, j+y);
+        }
     }
-    int x, y;
-    cin >> x >> y;
-    ch = str[x][y];
-    for(int i = 0; i < n; i++) {
-      for(int j = 0; j < m; j++) {
-        a[i][j] = str[i][j] == ch;
-      }
+    return res;
+} 
+
+signed main() { 
+    ios_base::sync_with_stdio(false); cin.tie(NULL); 
+    //freopen("input.txt", "r", stdin); 
+    //freopen("output.txt", "w", stdout); 
+
+    while(cin >> n >> m) {
+        a = vector<string> (n);
+        for(int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        int x, y;
+        cin >> y >> x;
+        tar = a[y][x];
+        dfs(y, x);
+        int res = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(a[i][j] == tar) {
+                    res = max(res, dfs(i, j));
+                }
+            }
+        }
+        cout << res << endl;
     }
-    clr(x, y);
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-      for(int j = 0; j < m; j++) {
-        if(a[i][j])
-          ans = max(ans, clr(i, j));
-      }
-    }
-    cout << ans << endl;
-  }
-}
-   
-   
+ }

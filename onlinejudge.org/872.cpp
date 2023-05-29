@@ -1,6 +1,6 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 27 May 2023 (Saturday)  8:38:20 AM
 //============================================================================
  
  /*   
@@ -181,48 +181,99 @@ signed main() {
 
     int t;
     cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
+    cin.ignore();
+    while(t--) {
         calculate();
+        if(t)
+            newl;
+    }
+}
+
+vs split(const string& str, const string& delim) {
+  vs tokens;
+  size_t prev = 0, pos = 0;
+  do {
+      pos = str.find(delim, prev);
+      if (pos == string::npos) pos = str.length();
+      string token = str.substr(prev, pos-prev);
+      if (!token.empty()) tokens.push_back(token);
+      prev = pos + delim.length();
+  } while (pos < str.length() && prev < str.length());
+  return tokens;
+}
+
+vector<vector<int>> adj;
+vector<int> deg;
+vector<bool> vis;
+map<int, char> mp;
+
+int N;
+
+bool done;
+
+void solve(vector<int> &res, set<int> &st) {
+    fe(v, st) {
+        if(vis[v]) continue;
+
+        fe(x, adj[v]) {
+            deg[x]--;
+            if(deg[x] == 0) {
+                st.insert(x);
+            }
+        }
+
+        res.push_back(v);
+        vis[v] = 1;
+        solve(res, st);
+        vis[v] = 0;
+        res.erase(res.end()-1);
+
+        fe(x, adj[v]) {
+            if(deg[x] == 0) {
+                st.erase(x);
+            }
+            deg[x]++;
+        }
+    }
+    if(res.size() == N) {
+        done = 1;
+        fe(x, res) cout << (x != res[0]? " " :  "") << mp[x];
         newl;
     }
 }
 
-vector<vector<int>> a;
-
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
-
 void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
-        }
+    string str1, str2;
+    getline(cin, str1);
+    getline(cin, str1);
+    getline(cin, str2);
+    vs elements = split(str1, " ");
+    N = elements.size();
+    deg = vector<int>(30);
+    vis = vector<bool>(30);
+    done = 0;
+    mp.clear();
+    map<char, int> pm;
+    int ind = 1;
+    fe(x, elements) {
+        mp[ind] = x[0];
+        pm[x[0]] = ind;
+        ind++;
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
-            }
-        }
+    adj = vector<vector<int>> (30);
+    vs tmp = split(str2, " ");
+    fe(x, tmp) {
+        adj[pm[x[0]]].push_back(pm[x[2]]);
+        deg[pm[x[2]]]++;
     }
-    cout << ans;
-
+    set<int> st;
+    fe(x, elements) {
+        if(deg[pm[x[0]]] == 0)
+            st.insert(pm[x[0]]);
+    }
+    vector<int> res;
+    solve(res, st);
+    if(!done) {
+        cout << "NO" << endl;
+    }
 }

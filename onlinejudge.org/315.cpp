@@ -1,8 +1,8 @@
 //============================================================================
 // Author      : Omar_Hafez
-// Created     : 26 May 2023 (Friday)  8:04:42 AM
+// Created     : 29 May 2023 (Monday)  6:43:30 AM
 //============================================================================
- 
+
  /*   
                 ________
                /        \
@@ -12,7 +12,7 @@
    / /      \ \  ______  / /      \ \
   / /        \ \________/ /        \ \ 
   \            /        \            /
-   \  ______  / /      \ \  ______  /   
+   \  ______  / /      \ \  ______  /    
     \________/ /        \ \________/
     /        \            /        \
    / /      \ \  ______  / /      \ \   
@@ -129,7 +129,6 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define endl '\n'
 #define newl cout<<endl;
 
-
 // some math
 #define point complex<ld>
 #define degree(x) (x) * 180.0 / PI
@@ -169,60 +168,72 @@ using pdqu = priority_queue<T, vector<T>, greater<T>>;
 #define vn_perm(x) next_permutation(all(x))
 #define vp_perm(x) prev_permutation(all(x))
 
-void calculate();
-
 // fflush(stdout);
 // cout << fixed << setprecision(10);
+
+vi split(const string& str, const string& delim) {
+  vi tokens;
+  size_t prev = 0, pos = 0;
+  do {
+      pos = str.find(delim, prev);
+      if (pos == string::npos) pos = str.length();
+      string token = str.substr(prev, pos-prev);
+      if (!token.empty()) tokens.push_back(stoi(token));
+      prev = pos + delim.length();
+  } while (pos < str.length() && prev < str.length());
+  return tokens;
+}
+
+int n;
+
+int dfs(int u, int parent, int time, vector<vector<int>> &adj, vector<int> &mn, vector<int> &dis, vector<bool> &ap) {
+    mn[u] = dis[u] = ++time;
+    int children = 0;
+    for(int v : adj[u]) {
+        if(v == parent) continue;
+        if(!dis[v]) {
+            children++;
+            dfs(v, u, time, adj, mn, dis, ap);
+            if(dis[u] <= mn[v]) ap[u] = 1;
+            mn[u] = min(mn[u], mn[v]);
+        } else {
+            mn[u] = min(mn[u], dis[v]);
+        }
+    }
+    return children;
+}
 
 signed main() { 
     ios_base::sync_with_stdio(false); cin.tie(NULL); 
     //freopen("input.txt", "r", stdin); 
     //freopen("output.txt", "w", stdout); 
 
-    int t;
-    cin >> t;
-    for(int i = 1; i <= t; i++) {
-        cout << "Case " << i << ": ";
-        calculate();
-        newl;
-    }
-}
-
-vector<vector<int>> a;
-
-int n;
-
-int dx[] = {0, 0, -1, 1};
-int dy[] = {1, -1, 0, 0};
-
-void go(int i, int j) {
-    if(i < 0 || i >= n ||j < 0 || j >= n || a[i][j] == 0) return;
-    a[i][j] = 0;
-    for(int w = 0; w < 4; w++) {
-        go(i+dx[w], j+dy[w]);
-    }
-} 
-
-void calculate() {
-    cin >> n;
-    a = vector<vector<int>>(n, vector<int>(n));
-    string s;
-    for(int i = 0; i < n; i++) {
-        cin >> s;
-        for(int j = 0; j < n; j++) {
-            if(s[j] == 'x') a[i][j] = 1;
-            else if(s[j] == '@') a[i][j] = 2;
-        }
-    }
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            if(a[i][j] == 1) {
-                go(i, j);
-                ans++;
+    while(cin >> n) {
+        if(n == 0) return 0;
+        cin.ignore();
+        vector<vector<int>> adj(n+1);
+        while(1) {
+            string s;
+            getline(cin, s);
+            if(s[0] == '0') break; 
+            vector<int> tmp = split(s, " ");
+            for(int i = 1; i < tmp.size(); i++) {
+                adj[tmp[0]].push_back(tmp[i]);
+                adj[tmp[i]].push_back(tmp[0]);
             }
         }
+        vector<bool> ap(n+1);
+        vector<int> mn(n+1), dis(n+1);
+        for(int i = 1; i <= n; i++) {
+            if(!dis[i]) {
+                ap[i] = (dfs(i, -1, 0, adj, mn, dis, ap) > 1);
+            }
+        }
+        int ans = 0;
+        for(int i = 1; i <= n; i++) {
+            ans += ap[i];
+        }
+        cout << ans << endl;
     }
-    cout << ans;
-
+    
 }
