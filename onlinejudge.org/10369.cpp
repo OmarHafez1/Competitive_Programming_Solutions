@@ -1,26 +1,47 @@
-/* 
-**
-**   author:  Omar_Hafez
-**   created: 05 April 2022 (Tuesday)  5:17:55 PM
-**
-*/
+//============================================================================
+// Author      : Omar_Hafez
+// Created     : 02 July 2023 (Sunday)  6:49:07 PM
+//============================================================================
  
+ /*   
+                ________
+               /        \
+              / /      \ \
+     ________/ /        \ \________
+    /        \            /        \ 
+   / /      \ \  ______  / /      \ \
+  / /        \ \________/ /        \ \ 
+  \            /        \            /
+   \  ______  / /      \ \  ______  /   
+    \________/ /        \ \________/
+    /        \            /        \
+   / /      \ \  ______  / /      \ \   
+  / /        \ \________/ /        \ \
+  \            /        \            /    
+   \  ______  / /      \ \  ______  /
+    \________/ /        \ \________/
+             \            /     
+              \  ______  / 
+               \________/ 
+
+*/
+
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
 using namespace chrono; 
 using namespace __gnu_pbds;
 
-typedef tree<int,null_type,less<int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_int;
-typedef tree<unsigned int,null_type,less<unsigned int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ui;
-typedef tree<long long,null_type,less<long long>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ll;
-typedef tree<unsigned long long,null_type,less<unsigned long long>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ull;
-typedef tree<double,null_type,less<double>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_db;
-typedef tree<long double,null_type,less<long double>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ld;
-typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_string;
+template<typename T>
+using indexed_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+template<typename T>
+using indexed_mset = tree<T,null_type,less_equal<T>,rb_tree_tag,tree_order_statistics_node_update>;
+
+#define int long long
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -83,14 +104,6 @@ using vpdp = vector<pdb>;
 #define ins insert
 #define ers erase
 
-#define iset_int indexed_set_int
-#define iset_ui indexed_set_ui
-#define iset_ll indexed_set_ll
-#define iset_ull indexed_set_ull
-#define iset_db indexed_set_db
-#define iset_ld indexed_set_ld
-#define iset_float indexed_set_float
-#define iset_string indexed_set_string
 #define key find_by_order
 #define order order_of_key
 
@@ -98,7 +111,8 @@ using vpdp = vector<pdb>;
 #define qu queue
 #define dqu deque
 #define pqu priority_queue
-#define pdqu(a) priority_queue<a,vector<a>,greater<a>>
+template <typename T>
+using pdqu = priority_queue<T, vector<T>, greater<T>>;
 
 // maps
 #define umap unordered_map
@@ -113,19 +127,7 @@ using vpdp = vector<pdb>;
 
 // some hacks
 #define endl '\n'
-#define getline(a) scanf("%[^\n]%*c", a);
 #define newl cout<<endl;
-
-#pragma GCC optimize("-Ofast")
-#pragma GCC target("sse,sse2,sse3,ssse3,sse4,sse4.2,popcnt,abm,mmx,avx2,tune=native")
-#pragma GCC optimize("-ffast-math")
-#pragma GCC optimize("-funroll-loops")
-#pragma GCC optimize("-funroll-all-loops,-fpeel-loops,-funswitch-loops")
-#define y0 this_fix_bug_with_y0_2022
-#define y1 this_fix_bug_with_y1_2022
-#define y2 this_fix_bug_with_y2_2022
-#define y3 this_fix_bug_with_y3_2022
-#define y4 this_fix_bug_with_y4_2022
 
 // some math
 #define point complex<ld>
@@ -170,23 +172,18 @@ void calculate();
 
 // fflush(stdout);
 
-int main() { 
-  ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
-  //freopen("output.txt", "w", stdout); 
- 
+signed main() { 
+    ios_base::sync_with_stdio(false); cin.tie(NULL); 
+    //freopen("input.txt", "r", stdin); 
+    //freopen("output.txt", "w", stdout); 
 
- cout << fixed << setprecision(2);
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
-}
-
-int dis(int x1, int y1, int x2, int y2) {
-  return pow(x1-x2, 2) + pow(y1-y2, 2);
+    cout << fixed << setprecision(2);
+    int t;
+    cin >> t;
+    while(t--) {
+        calculate();
+        newl;
+    }
 }
 
 struct DSU {
@@ -229,34 +226,37 @@ struct DSU {
 
 };
 
+int calc(int x1, int y1, int x2, int y2) {
+    x1 -= x2;
+    y1 -= y2;
+    return pow(x1, 2)+pow(y1, 2);
+}
+
 void calculate() {
-  int s, p;
-  cin >> s >> p;
-  int x[p], y[p];
-  for(int i = 0; i < p; i++) {
-    cin >> x[i] >> y[i];
-  }
-  vec<tuple<int, int, int>> d;
-  for(int i = 0; i < p; i++) {
-    for(int j = i+1; j < p; j++) {
-      d.push_back({dis(x[i], y[i], x[j], y[j]), i, j});
+    int n, m;
+    cin >> n >> m;
+    int x[m], y[m];
+    vector<tuple<int, int, int>> dis;
+    for(int i = 0; i < m; i++) {
+        cin >> x[i] >> y[i];
+        for(int j = 0; j < i; j++) {
+            dis.emplace_back(calc(x[i], y[i], x[j], y[j]), i, j);
+        }
     }
-  }
-  sor(d);
-  DSU dsu = DSU(p);
-  vi ans;
-  fe(x, d) {
-    if(dsu.same_set(get<1>(x), get<2>(x))) continue;
-    dsu.unite(get<1>(x), get<2>(x)); 
-    ans.push_back(get<0>(x));
-  }
-  rsor(ans);
-  fe(x, ans) {
-    s--;
-    if(s == 0) {
-      cout << (sqrt(x));
-      return;
+    DSU dsu = DSU(m+1);
+    sor(dis);
+    int ans = 0;
+    m -= n;
+    for(auto &x : dis) {
+        if(dsu.same_set(get<1>(x), get<2>(x))) continue;
+        dsu.unite(get<1>(x), get<2>(x));
+        if(m == 0) break;
+        m--;
+        ans = max(ans, get<0>(x));
     }
-  }
-  cout << 0;
+    ld w = sqrt(ans);
+    w *= 100;
+    w = round(w);
+    w /= 100;
+    cout << w;
 }

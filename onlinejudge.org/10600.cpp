@@ -1,26 +1,47 @@
-/* 
-**
-**   author:  Omar_Hafez
-**   created: 05 April 2022 (Tuesday)  6:05:21 PM
-**
-*/
+//============================================================================
+// Author      : Omar_Hafez
+// Created     : 02 July 2023 (Sunday)  11:29:44 PM
+//============================================================================
  
+ /*   
+                ________
+               /        \
+              / /      \ \
+     ________/ /        \ \________
+    /        \            /        \ 
+   / /      \ \  ______  / /      \ \
+  / /        \ \________/ /        \ \ 
+  \            /        \            /
+   \  ______  / /      \ \  ______  /   
+    \________/ /        \ \________/
+    /        \            /        \
+   / /      \ \  ______  / /      \ \   
+  / /        \ \________/ /        \ \
+  \            /        \            /    
+   \  ______  / /      \ \  ______  /
+    \________/ /        \ \________/
+             \            /     
+              \  ______  / 
+               \________/ 
+
+*/
+
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
 using namespace chrono; 
 using namespace __gnu_pbds;
 
-typedef tree<int,null_type,less<int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_int;
-typedef tree<unsigned int,null_type,less<unsigned int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ui;
-typedef tree<long long,null_type,less<long long>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ll;
-typedef tree<unsigned long long,null_type,less<unsigned long long>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ull;
-typedef tree<double,null_type,less<double>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_db;
-typedef tree<long double,null_type,less<long double>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ld;
-typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_string;
+template<typename T>
+using indexed_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+template<typename T>
+using indexed_mset = tree<T,null_type,less_equal<T>,rb_tree_tag,tree_order_statistics_node_update>;
+
+#define int long long
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
+const int INF = 1e9;
 
 //
 using ui = unsigned int;
@@ -83,14 +104,6 @@ using vpdp = vector<pdb>;
 #define ins insert
 #define ers erase
 
-#define iset_int indexed_set_int
-#define iset_ui indexed_set_ui
-#define iset_ll indexed_set_ll
-#define iset_ull indexed_set_ull
-#define iset_db indexed_set_db
-#define iset_ld indexed_set_ld
-#define iset_float indexed_set_float
-#define iset_string indexed_set_string
 #define key find_by_order
 #define order order_of_key
 
@@ -98,7 +111,8 @@ using vpdp = vector<pdb>;
 #define qu queue
 #define dqu deque
 #define pqu priority_queue
-#define pdqu(a) priority_queue<a,vector<a>,greater<a>>
+template <typename T>
+using pdqu = priority_queue<T, vector<T>, greater<T>>;
 
 // maps
 #define umap unordered_map
@@ -113,19 +127,7 @@ using vpdp = vector<pdb>;
 
 // some hacks
 #define endl '\n'
-#define getline(a) scanf("%[^\n]%*c", a);
 #define newl cout<<endl;
-
-#pragma GCC optimize("-Ofast")
-#pragma GCC target("sse,sse2,sse3,ssse3,sse4,sse4.2,popcnt,abm,mmx,avx2,tune=native")
-#pragma GCC optimize("-ffast-math")
-#pragma GCC optimize("-funroll-loops")
-#pragma GCC optimize("-funroll-all-loops,-fpeel-loops,-funswitch-loops")
-#define y0 this_fix_bug_with_y0_2022
-#define y1 this_fix_bug_with_y1_2022
-#define y2 this_fix_bug_with_y2_2022
-#define y3 this_fix_bug_with_y3_2022
-#define y4 this_fix_bug_with_y4_2022
 
 // some math
 #define point complex<ld>
@@ -171,21 +173,18 @@ void calculate();
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
-int main() { 
-  ios_base::sync_with_stdio(false); cin.tie(NULL); 
-  //freopen("input.txt", "r", stdin); 
-  //freopen("output.txt", "w", stdout); 
+signed main() { 
+    ios_base::sync_with_stdio(false); cin.tie(NULL); 
+    //freopen("input.txt", "r", stdin); 
+    //freopen("output.txt", "w", stdout); 
 
-  int t;
-  cin >> t;
-  while(t--) {
-    calculate();
-    newl;
-  }
+    int t;
+    cin >> t;
+    while(t--) {
+        calculate();
+        newl;
+    }
 }
-
-
-int n, m;
 
 struct DSU {
   int N;
@@ -227,45 +226,45 @@ struct DSU {
 
 };
 
-int gg(vec<tuple<int, int, int>> &a, int no) {
-  DSU dsu = DSU(n);
-  int ind = -1;
-  int res = 0;
-  int cnt = 0;
-  fe(x, a) {
-    ind++;
-    if(ind == no) continue;
-    if(dsu.same_set(get<1>(x), get<2>(x))) continue;
-    dsu.unite(get<1>(x), get<2>(x));
-    res += get<0>(x);
-    cnt++;
-  }
-  if(cnt != n-1) return INT_MAX;
-  return res;
+int n, m;
+vector<int> b;
+int mst(vector<tuple<int, int, int>> &a, bool fir) {
+    DSU dsu = DSU(n+1);
+    int res = 0;
+    int ind = -1;
+    for(auto &x : a) {
+        ind++;
+        if(get<0>(x) == INF || dsu.same_set(get<1>(x), get<2>(x))) continue;
+        dsu.unite(get<1>(x), get<2>(x));
+        if(fir) {
+            b.push_back(ind);
+        }
+        res += get<0>(x);
+    }
+    for(int i = 1; i < n; i++) {
+        if(!dsu.same_set(i, i+1)) return INF;
+    }
+    return res;
 }
 
 void calculate() {
-  cin >> n >> m;
-  vec<tuple<int, int, int>> a(m);
-  int x, y, c;
-  for(int i = 0; i < m; i++) {
-    cin >> x >> y >> c;
-    a[i] = {c, x, y};
-  }
-  sor(a);
-  DSU dsu = DSU(n);
-  vi used;
-  int ans1 = 0, ans2 = INT_MAX;
-  int ind = -1;
-  fe(x, a) {
-    ind++;
-    if(dsu.same_set(get<1>(x), get<2>(x))) continue;
-    dsu.unite(get<1>(x), get<2>(x));
-    ans1 += get<0> (x);
-    used.push_back(ind);
-  }
-  fe(x, used) {
-    ans2 = min(ans2, gg(a, x));
-  }
-  cout << ans1 << ' ' << ans2;
+    cin >> n >> m;
+    int u, v, c;
+    b = vector<int>();
+    vector<tuple<int, int, int>> a;
+    for(int i = 0; i < m; i++) {
+        cin >> u >> v >> c;
+        a.emplace_back(c, u, v);
+    }
+    sor(a);
+    cout << mst(a, 1) << " ";
+    int ans = INT_MAX;
+    int tmp;
+    for(int i = 0; i < b.size(); i++) {
+        tmp = get<0>(a[b[i]]);
+        get<0>(a[b[i]]) = INF;
+        ans = min(ans, mst(a, 0));
+        get<0>(a[b[i]]) = tmp;
+    }
+    cout << ans;
 }

@@ -1,23 +1,43 @@
-/* 
-**
-**   author:  Omar_Hafez
-**   created: 28 May 2022 (Saturday)  8:41:35 PM
-**
+//============================================================================
+// Author      : Omar_Hafez
+// Created     : 15 July 2023 (Saturday)  9:02:12 PM
+//============================================================================
+
+ /*   
+                ________
+               /        \
+              / /      \ \
+     ________/ /        \ \________
+    /        \            /        \ 
+   / /      \ \  ______  / /      \ \
+  / /        \ \________/ /        \ \ 
+  \            /        \            /
+   \  ______  / /      \ \  ______  /    
+    \________/ /        \ \________/
+    /        \            /        \
+   / /      \ \  ______  / /      \ \   
+  / /        \ \________/ /        \ \
+  \            /        \            /    
+   \  ______  / /      \ \  ______  /
+    \________/ /        \ \________/
+             \            /     
+              \  ______  / 
+               \________/ 
+
 */
- 
+
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
 using namespace chrono; 
 using namespace __gnu_pbds;
 
-typedef tree<int,null_type,less<int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_int;
-typedef tree<unsigned int,null_type,less<unsigned int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ui;
-typedef tree<long long,null_type,less<long long>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ll;
-typedef tree<unsigned long long,null_type,less<unsigned long long>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ull;
-typedef tree<double,null_type,less<double>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_db;
-typedef tree<long double,null_type,less<long double>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_ld;
-typedef tree<string,null_type,less<string>,rb_tree_tag,tree_order_statistics_node_update> indexed_set_string;
+template<typename T>
+using indexed_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+template<typename T>
+using indexed_mset = tree<T,null_type,less_equal<T>,rb_tree_tag,tree_order_statistics_node_update>;
+
+#define int long long
 
 const double PI = 3.141592653589793;
 const int MOD = 1e9+7; 
@@ -57,6 +77,8 @@ using vpdp = vector<pdb>;
 #define popf pop_front()
 
 // pairs & tuples
+#define fir first
+#define sec second
 #define tsize(t) tuple_size<decltype(t)>::value
 #define tcat tuple_cat
 
@@ -82,20 +104,15 @@ using vpdp = vector<pdb>;
 #define ins insert
 #define ers erase
 
-#define iset_int indexed_set_int
-#define iset_ui indexed_set_ui
-#define iset_ll indexed_set_ll
-#define iset_ull indexed_set_ull
-#define iset_db indexed_set_db
-#define iset_ld indexed_set_ld
-#define iset_float indexed_set_float
-#define iset_string indexed_set_string
+#define key find_by_order
+#define order order_of_key
 
 // queue
 #define qu queue
 #define dqu deque
 #define pqu priority_queue
-#define pdqu(a) priority_queue<a,vector<a>,greater<a>>
+template <typename T>
+using pdqu = priority_queue<T, vector<T>, greater<T>>;
 
 // maps
 #define umap unordered_map
@@ -110,7 +127,6 @@ using vpdp = vector<pdb>;
 
 // some hacks
 #define endl '\n'
-#define getline(a) scanf("%[^\n]%*c", a);
 #define newl cout<<endl;
 
 #pragma GCC optimize("-Ofast")
@@ -166,25 +182,21 @@ using vpdp = vector<pdb>;
 // fflush(stdout);
 // cout << fixed << setprecision(10);
 
-int main() { 
-	ios_base::sync_with_stdio(false); cin.tie(NULL); 
-	//freopen("input.txt", "r", stdin); 
-	//freopen("output.txt", "w", stdout); 
+signed main() { 
+    ios_base::sync_with_stdio(false); cin.tie(NULL); 
+    //freopen("input.txt", "r", stdin); 
+    //freopen("output.txt", "w", stdout); 
 
-	int n;
-	cin >> n;
-	int dp[n][3];
-	for(int i = 0; i < n; i++) {
-		for(int j = 0; j < 3; j++) {
-			cin >> dp[i][j];
-		}
-	}
-	for(int i = 1; i < n; i++) {
-		dp[i][0] += max(dp[i-1][1], dp[i-1][2]);
-		dp[i][1] += max(dp[i-1][0], dp[i-1][2]);
-		dp[i][2] += max(dp[i-1][0], dp[i-1][1]);
-	}
-	cout << max(dp[n-1][0], max(dp[n-1][1], dp[n-1][2]));
+    int n;
+    cin >> n;
+    int a[n][3];
+    for(int i = 0; i < n; i++) {
+        cin >> a[i][0] >> a[i][1] >> a[i][2];
+    }
+    for(int i = 1; i < n; i++) {
+        a[i][0] += max(a[i-1][1], a[i-1][2]);
+        a[i][1] += max(a[i-1][0], a[i-1][2]);
+        a[i][2] += max(a[i-1][1], a[i-1][0]);
+    }
+    cout << max(a[n-1][0], max(a[n-1][1], a[n-1][2]));
 }
-	 
-	 
